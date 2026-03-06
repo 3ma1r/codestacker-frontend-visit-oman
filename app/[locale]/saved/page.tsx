@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import type { Locale } from "../../../lib/i18n/locale";
+import { useParams } from "next/navigation";
+import { isLocale, type Locale } from "../../../lib/i18n/locale";
 import { loadDestinations } from "../../../lib/data/load";
 import DestinationCard from "../../../components/destinations/DestinationCard";
 import { useAppStore } from "../../../store/useAppStore";
 import type { Destination } from "../../../types/destination";
 
-type Props = {
-  params: { locale: Locale };
-};
-
-export default function SavedPage({ params }: Props) {
+export default function SavedPage() {
+  const params = useParams();
+  const raw = params?.locale;
+  const locale: Locale =
+    typeof raw === "string" && isLocale(raw) ? raw : "en";
   const destinations = useMemo(() => loadDestinations(), []);
   const savedInterests = useAppStore((state) => state.savedInterests);
   const toggleSave = useAppStore((state) => state.toggleSave);
@@ -26,31 +27,31 @@ export default function SavedPage({ params }: Props) {
     .filter((destination): destination is Destination => Boolean(destination));
 
   const title =
-    params.locale === "ar" ? "الوجهات المحفوظة" : "Saved Destinations";
+    locale === "ar" ? "الوجهات المحفوظة" : "Saved Destinations";
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">{title}</h1>
         <Link
-          href={`/${params.locale}/planner`}
+          href={`/${locale}/planner`}
           className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white"
         >
-          {params.locale === "ar" ? "خطط بالمحفوظات" : "Plan with saved"}
+          {locale === "ar" ? "خطط بالمحفوظات" : "Plan with saved"}
         </Link>
       </div>
 
       {savedDestinations.length === 0 ? (
         <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-500">
-          {params.locale === "ar"
+          {locale === "ar"
             ? "لا توجد وجهات محفوظة بعد."
             : "No saved destinations yet."}
           <div className="mt-3">
             <Link
-              href={`/${params.locale}/destinations`}
+              href={`/${locale}/destinations`}
               className="text-sm font-medium underline"
             >
-              {params.locale === "ar" ? "تصفح الوجهات" : "Browse destinations"}
+              {locale === "ar" ? "تصفح الوجهات" : "Browse destinations"}
             </Link>
           </div>
         </div>
@@ -58,13 +59,13 @@ export default function SavedPage({ params }: Props) {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {savedDestinations.map((destination) => (
             <div key={destination.id} className="relative">
-              <DestinationCard destination={destination} locale={params.locale} />
+              <DestinationCard destination={destination} locale={locale} />
               <button
                 type="button"
                 onClick={() => toggleSave(destination.id)}
                 className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-zinc-700 shadow"
               >
-                {params.locale === "ar" ? "إزالة" : "Remove"}
+                {locale === "ar" ? "إزالة" : "Remove"}
               </button>
             </div>
           ))}
@@ -73,7 +74,7 @@ export default function SavedPage({ params }: Props) {
 
       {savedDestinations.length > 0 && (
         <div className="text-sm text-zinc-500">
-          {params.locale === "ar"
+          {locale === "ar"
             ? `المحفوظات: ${savedDestinations.length}`
             : `Saved: ${savedDestinations.length}`}
         </div>
