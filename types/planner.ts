@@ -10,3 +10,8 @@ export type PlannerInputs = {
   intensity: Intensity;
   preferredCategories: Category[];
 };
+
+export type RegionAllocation = {
+  region: import("./destination").RegionKey;
+  days: number;
+};
