@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Destination, Locale } from "../../types/destination";
 import { tName, tRegion } from "../../lib/i18n/strings";
 import CrowdViz from "./CrowdViz";
@@ -10,7 +11,10 @@ type Props = {
 
 export default function DestinationCard({ destination, locale }: Props) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+    <Link
+      href={`/${locale}/destinations/${destination.id}`}
+      className="flex h-full flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-zinc-300"
+    >
       <div className="space-y-2">
         <div>
           <h3 className="text-lg font-semibold text-zinc-900">
@@ -44,6 +48,6 @@ export default function DestinationCard({ destination, locale }: Props) {
         <CrowdViz level={destination.crowd_level} />
         <SaveInterestButton destinationId={destination.id} />
       </div>
-    </div>
+    </Link>
   );
 }

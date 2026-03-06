@@ -5,7 +5,7 @@ import { loadDestinations } from "../../lib/data/load";
 import type { Locale } from "../../types/destination";
 
 type Props = {
-  params: { locale: Locale };
+  params: Promise<{ locale: Locale }>;
 };
 
 const CATEGORY_CARDS = [
@@ -15,10 +15,10 @@ const CATEGORY_CARDS = [
   { label: "Culture", href: "category=culture" },
 ];
 
-export default function DiscoverPage({ params }: Props) {
+export default async function DiscoverPage({ params }: Props) {
   const destinations = loadDestinations();
   const featured = getFeaturedDestinations(destinations, 1, 6);
-  const { locale } = params;
+  const { locale } = await params;
 
   return (
     <div className="space-y-12">

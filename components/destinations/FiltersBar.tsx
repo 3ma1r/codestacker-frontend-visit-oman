@@ -26,19 +26,33 @@ type Props = {
   region?: string;
   season?: string;
   sort?: string;
+  query?: string;
 };
 
-export default function FiltersBar({ category, region, season, sort }: Props) {
+export default function FiltersBar({
+  category,
+  region,
+  season,
+  sort,
+  query,
+}: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const updateParam = (key: string, value?: string) => {
+  const updateParam = (
+    key: string,
+    value?: string,
+    options: { resetPage?: boolean } = {},
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     if (!value) {
       params.delete(key);
     } else {
       params.set(key, value);
+    }
+    if (options.resetPage !== false) {
+      params.delete("page");
     }
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname);
@@ -51,7 +65,9 @@ export default function FiltersBar({ category, region, season, sort }: Props) {
         <select
           className="rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900"
           value={category ?? ""}
-          onChange={(event) => updateParam("category", event.target.value)}
+          onChange={(event) =>
+            updateParam("category", event.target.value, { resetPage: true })
+          }
         >
           <option value="">All</option>
           {CATEGORY_OPTIONS.map((option) => (
@@ -67,7 +83,9 @@ export default function FiltersBar({ category, region, season, sort }: Props) {
         <select
           className="rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900"
           value={region ?? ""}
-          onChange={(event) => updateParam("region", event.target.value)}
+          onChange={(event) =>
+            updateParam("region", event.target.value, { resetPage: true })
+          }
         >
           <option value="">All</option>
           {REGION_OPTIONS.map((option) => (
@@ -83,7 +101,9 @@ export default function FiltersBar({ category, region, season, sort }: Props) {
         <select
           className="rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900"
           value={season ?? ""}
-          onChange={(event) => updateParam("season", event.target.value)}
+          onChange={(event) =>
+            updateParam("season", event.target.value, { resetPage: true })
+          }
         >
           <option value="">Any</option>
           <option value="winter">winter</option>
@@ -98,12 +118,27 @@ export default function FiltersBar({ category, region, season, sort }: Props) {
         <select
           className="rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900"
           value={sort ?? ""}
-          onChange={(event) => updateParam("sort", event.target.value)}
+          onChange={(event) =>
+            updateParam("sort", event.target.value, { resetPage: true })
+          }
         >
           <option value="">Default</option>
           <option value="crowd">Least crowded</option>
           <option value="cost">Lowest cost</option>
         </select>
+      </label>
+
+      <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+        Search
+        <input
+          type="text"
+          value={query ?? ""}
+          onChange={(event) =>
+            updateParam("q", event.target.value.trim(), { resetPage: true })
+          }
+          placeholder="Search destinations"
+          className="rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900"
+        />
       </label>
     </div>
   );

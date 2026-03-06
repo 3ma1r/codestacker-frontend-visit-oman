@@ -1,13 +1,21 @@
+import Link from "next/link";
 import DestinationCard from "../../../components/destinations/DestinationCard";
 import FiltersBar from "../../../components/destinations/FiltersBar";
 import { loadDestinations } from "../../../lib/data/load";
 import { filterAndSortDestinations } from "../../../lib/data/query";
 import type { BrowseQuery } from "../../../lib/data/query";
-import type { Locale, Month, RegionKey, Category } from "../../../types/destination";
+import type {
+  Locale,
+  Month,
+  RegionKey,
+  Category,
+  Destination,
+} from "../../../types/destination";
+import { tName } from "../../../lib/i18n/strings";
 
 type Props = {
-  params: { locale: Locale };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 const CATEGORY_VALUES: Category[] = [
@@ -88,17 +96,80 @@ function getActiveFilters(query: BrowseQuery) {
   return chips;
 }
 
-export default function DestinationsPage({ params, searchParams }: Props) {
+const PAGE_SIZE = 12;
+
+function parsePage(value?: string | string[]): number {
+  if (!value || Array.isArray(value)) {
+    return 1;
+  }
+  const parsed = Number(value);
+  if (Number.isInteger(parsed) && parsed > 0) {
+    return parsed;
+  }
+  return 1;
+}
+
+function filterByQuery(
+  destinations: Destination[],
+  query: string,
+  locale: Locale,
+): Destination[] {
+  if (!query) {
+    return destinations;
+  }
+  const needle = query.toLowerCase();
+  return destinations.filter((destination) =>
+    tName(destination, locale).toLowerCase().includes(needle),
+  );
+}
+
+function buildQueryString(
+  params: Record<string, string | string[] | undefined>,
+  page: number,
+): string {
+  const next = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined) {
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item) => next.append(key, item));
+    } else {
+      next.set(key, value);
+    }
+  });
+  if (page <= 1) {
+    next.delete("page");
+  } else {
+    next.set("page", String(page));
+  }
+  const query = next.toString();
+  return query ? `?${query}` : "";
+}
+
+export default async function DestinationsPage({ params, searchParams }: Props) {
+  const resolvedParams = await params;
+  const resolvedSearch = await searchParams;
   const query: BrowseQuery = {
-    category: parseCategory(searchParams.category),
-    region: parseRegion(searchParams.region),
-    month: parseMonth(searchParams.month),
-    season: parseSeason(searchParams.season),
-    sort: parseSort(searchParams.sort),
+    category: parseCategory(resolvedSearch.category),
+    region: parseRegion(resolvedSearch.region),
+    month: parseMonth(resolvedSearch.month),
+    season: parseSeason(resolvedSearch.season),
+    sort: parseSort(resolvedSearch.sort),
   };
 
   const destinations = loadDestinations();
   const results = filterAndSortDestinations(destinations, query);
+  const searchQuery =
+    typeof resolvedSearch.q === "string" ? resolvedSearch.q.trim() : "";
+  const searched = filterByQuery(results, searchQuery, resolvedParams.locale);
+  const page = parsePage(resolvedSearch.page);
+  const total = searched.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const startIndex = (safePage - 1) * PAGE_SIZE;
+  const endIndex = Math.min(total, startIndex + PAGE_SIZE);
+  const paged = searched.slice(startIndex, endIndex);
   const chips = getActiveFilters(query);
 
   return (
@@ -111,10 +182,11 @@ export default function DestinationsPage({ params, searchParams }: Props) {
       </header>
 
       <FiltersBar
-        category={searchParams.category as string | undefined}
-        region={searchParams.region as string | undefined}
-        season={searchParams.season as string | undefined}
-        sort={searchParams.sort as string | undefined}
+        category={resolvedSearch.category as string | undefined}
+        region={resolvedSearch.region as string | undefined}
+        season={resolvedSearch.season as string | undefined}
+        sort={resolvedSearch.sort as string | undefined}
+        query={searchQuery}
       />
 
       <div className="flex flex-wrap gap-2">
@@ -132,12 +204,48 @@ export default function DestinationsPage({ params, searchParams }: Props) {
         )}
       </div>
 
+      <div className="flex items-center justify-between text-sm text-zinc-500">
+        <span>
+          Showing {total === 0 ? 0 : startIndex + 1}–{endIndex} of {total}
+        </span>
+        <div className="flex gap-2">
+          <Link
+            href={`/${resolvedParams.locale}/destinations${buildQueryString(
+              resolvedSearch,
+              safePage - 1,
+            )}`}
+            className={[
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              safePage <= 1
+                ? "pointer-events-none border-zinc-100 text-zinc-300"
+                : "border-zinc-200 text-zinc-600",
+            ].join(" ")}
+          >
+            Prev
+          </Link>
+          <Link
+            href={`/${resolvedParams.locale}/destinations${buildQueryString(
+              resolvedSearch,
+              safePage + 1,
+            )}`}
+            className={[
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              safePage >= totalPages
+                ? "pointer-events-none border-zinc-100 text-zinc-300"
+                : "border-zinc-200 text-zinc-600",
+            ].join(" ")}
+          >
+            Next
+          </Link>
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {results.map((destination) => (
+        {paged.map((destination) => (
           <DestinationCard
             key={destination.id}
             destination={destination}
-            locale={params.locale}
+            locale={resolvedParams.locale}
           />
         ))}
       </div>
