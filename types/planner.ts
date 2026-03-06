@@ -32,3 +32,22 @@ export type DayPlan = {
   totalKm: number;
   totalVisitMinutes: number;
 };
+
+export type StopExplanation = {
+  destinationId: string;
+  top2: import("./scoring").ScoreComponent[];
+};
+
+export type PlannerResult = {
+  algorithmVersion: string;
+  inputs: PlannerInputs;
+  regionAllocation: RegionAllocation[];
+  days: Array<{
+    dayIndex: number;
+    region: import("./destination").RegionKey;
+    routeDestinationIds: string[];
+    dayPlan: DayPlan;
+    explanations: StopExplanation[];
+  }>;
+  totalKm: number;
+};
