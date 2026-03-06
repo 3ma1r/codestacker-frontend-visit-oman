@@ -1,16 +1,21 @@
-import SavedInterestsPanel from "../../../components/planner/SavedInterestsPanel";
+import PlannerShell from "../../../components/planner/PlannerShell";
+import type { Locale } from "../../../lib/i18n/locale";
 
-export default function PlannerPage() {
+type Props = {
+  params: { locale: Locale };
+};
+
+export default function PlannerPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">Planner (CSR placeholder)</h1>
+        <h1 className="text-2xl font-semibold">Trip planner</h1>
         <p className="text-sm text-zinc-500">
-          Planner logic will be added later. Saved interests are listed below.
+          Set your preferences and generate a deterministic itinerary.
         </p>
       </header>
 
-      <SavedInterestsPanel />
+      <PlannerShell locale={params.locale} />
     </div>
   );
 }

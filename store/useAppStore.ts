@@ -2,16 +2,20 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { PlannerInputs, PlannerResult } from "../types/planner";
 
 type AppState = {
   version: 1;
   locale: "en" | "ar";
   savedInterests: string[];
-  plannerInputs: null;
-  plannerResult: null;
+  plannerInputs: PlannerInputs | null;
+  plannerResult: PlannerResult | null;
   toggleSave: (id: string) => void;
   isSaved: (id: string) => boolean;
   clearSaved: () => void;
+  setPlannerInputs: (inputs: PlannerInputs) => void;
+  setPlannerResult: (result: PlannerResult) => void;
+  clearPlanner: () => void;
 };
 
 const initialState = {
@@ -37,6 +41,9 @@ export const useAppStore = create<AppState>()(
         }),
       isSaved: (id) => get().savedInterests.includes(id),
       clearSaved: () => set({ savedInterests: [] }),
+      setPlannerInputs: (inputs) => set({ plannerInputs: inputs }),
+      setPlannerResult: (result) => set({ plannerResult: result }),
+      clearPlanner: () => set({ plannerInputs: null, plannerResult: null }),
     }),
     {
       name: "visitoman:v1",
