@@ -1,4 +1,6 @@
-export type Locale = "en" | "ar";
+import type { Locale } from "../../types/destination";
+
+export type { Locale } from "../../types/destination";
 
 export function isLocale(value: string): value is Locale {
   return value === "en" || value === "ar";
