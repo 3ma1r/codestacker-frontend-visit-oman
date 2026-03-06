@@ -1,11 +1,18 @@
 import PlannerShell from "../../../components/planner/PlannerShell";
-import type { Locale } from "../../../lib/i18n/locale";
+import { isLocale, type Locale } from "../../../lib/i18n/locale";
+import { notFound } from "next/navigation";
 
 type Props = {
-  params: { locale: Locale };
+  params: Promise<{ locale: Locale }>;
 };
 
-export default function PlannerPage({ params }: Props) {
+export default async function PlannerPage({ params }: Props) {
+  const { locale } = await params;
+
+  if (!isLocale(locale)) {
+    notFound();
+  }
+
   return (
     <div className="space-y-6">
       <header className="space-y-2">
@@ -15,7 +22,7 @@ export default function PlannerPage({ params }: Props) {
         </p>
       </header>
 
-      <PlannerShell locale={params.locale} />
+      <PlannerShell locale={locale} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { ScoreComponent } from "../../types/scoring";
 import type { Locale } from "../i18n/locale";
+import { isLocale } from "../i18n/locale";
 
 const LABELS: Record<Locale, Record<ScoreComponent, string>> = {
   en: {
@@ -20,6 +21,10 @@ const LABELS: Record<Locale, Record<ScoreComponent, string>> = {
   },
 };
 
-export function componentLabel(c: ScoreComponent, locale: Locale): string {
-  return LABELS[locale][c];
+export function componentLabel(
+  c: ScoreComponent,
+  locale?: Locale | string,
+): string {
+  const safeLocale = isLocale(locale ?? "") ? locale : "en";
+  return LABELS[safeLocale][c] ?? c;
 }

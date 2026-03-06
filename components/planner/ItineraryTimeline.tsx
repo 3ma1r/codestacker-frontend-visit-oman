@@ -57,14 +57,18 @@ export default function ItineraryTimeline({ day, destinationsById, locale }: Pro
             </div>
 
             <div className="mt-2 flex flex-wrap gap-2">
-              {top2.map((component) => (
-                <span
-                  key={component}
-                  className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600"
-                >
-                  {componentLabel(component, locale)}
-                </span>
-              ))}
+              {top2.length === 0 ? (
+                <span className="text-xs text-zinc-400">—</span>
+              ) : (
+                top2.map((component) => (
+                  <span
+                    key={component}
+                    className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600"
+                  >
+                    {componentLabel(component, locale)}
+                  </span>
+                ))
+              )}
             </div>
           </div>
         );
