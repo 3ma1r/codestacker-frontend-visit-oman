@@ -70,6 +70,7 @@ export function buildPlan(
   const days: PlannerResult["days"] = [];
   const routesByDay: Destination[][] = [];
   const dayPlans: DayPlan[] = [];
+  const usedIds = new Set<string>();
 
   const buildExplanations = (route: Destination[]) => {
     const explanations: StopExplanation[] = [];
@@ -105,7 +106,17 @@ export function buildPlan(
         dayRegion: region,
         userPreferredCategories: preferredCategories,
       };
-      const rawRoute = buildDayRoute(regionDests, ctx, inputsWithPrefs, stats);
+      let rawRoute = buildDayRoute(
+        regionDests,
+        ctx,
+        inputsWithPrefs,
+        stats,
+        undefined,
+        usedIds,
+      );
+      if (rawRoute.length === 0) {
+        rawRoute = buildDayRoute(regionDests, ctx, inputsWithPrefs, stats);
+      }
       const improvedRoute = twoOptImprove(rawRoute, ctx, totalKmDest, validateDay);
       const dayPlan = scheduleDay(region, improvedRoute);
       const explanations = buildExplanations(improvedRoute);
@@ -119,6 +130,7 @@ export function buildPlan(
       });
       routesByDay.push(improvedRoute);
       dayPlans.push(dayPlan);
+      improvedRoute.forEach((stop) => usedIds.add(stop.id));
       dayIndex += 1;
     }
   }

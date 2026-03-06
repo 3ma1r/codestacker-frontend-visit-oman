@@ -55,9 +55,12 @@ export function buildDayRoute(
   inputs: PlannerInputs,
   stats: DatasetStats,
   weights: Weights = DEFAULT_WEIGHTS,
+  excludedIds?: Set<string>,
 ): Destination[] {
   const candidates = regionDests.filter(
-    (destination) => destination.regionKey === ctx.dayRegion,
+    (destination) =>
+      destination.regionKey === ctx.dayRegion &&
+      (!excludedIds || !excludedIds.has(destination.id)),
   );
 
   const preferredCategories =
