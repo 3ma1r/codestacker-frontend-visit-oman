@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import SavedCounter from "../../components/common/SavedCounter";
 import { getDir, isLocale, type Locale } from "../../lib/i18n/locale";
 
 function getSwitchPath(locale: Locale, pathname: string) {
@@ -45,9 +46,12 @@ export default async function LocaleLayout({
           <Link href={`/${locale}/destinations`}>Destinations</Link>
           <Link href={`/${locale}/planner`}>Planner</Link>
         </nav>
-        <Link href={switchPath} className="text-sm font-medium underline">
-          {locale === "en" ? "العربية" : "English"}
-        </Link>
+        <div className="flex items-center gap-4">
+          <SavedCounter />
+          <Link href={switchPath} className="text-sm font-medium underline">
+            {locale === "en" ? "العربية" : "English"}
+          </Link>
+        </div>
       </header>
       <main className="px-6 py-8">{children}</main>
     </div>

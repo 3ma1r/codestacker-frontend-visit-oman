@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import CrowdViz from "../../../../components/destinations/CrowdViz";
 import MapPreview from "../../../../components/destinations/MapPreview";
 import MonthsIndicator from "../../../../components/destinations/MonthsIndicator";
+import SaveInterestButton from "../../../../components/destinations/SaveInterestButton";
 import { byIdMap, loadDestinations } from "../../../../lib/data/load";
 import { tCompany, tName, tRegion } from "../../../../lib/i18n/strings";
 import type { Locale } from "../../../../types/destination";
@@ -38,12 +39,17 @@ export default function DestinationDetailsPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold">
-          {tName(destination, params.locale)}
-        </h1>
-        <p className="text-sm text-zinc-500">
-          {tRegion(destination, params.locale)}
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold">
+              {tName(destination, params.locale)}
+            </h1>
+            <p className="text-sm text-zinc-500">
+              {tRegion(destination, params.locale)}
+            </p>
+          </div>
+          <SaveInterestButton destinationId={destination.id} />
+        </div>
       </header>
 
       <section className="rounded-xl border border-zinc-200 bg-white p-4">

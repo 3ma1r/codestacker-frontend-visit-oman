@@ -1,6 +1,7 @@
 import type { Destination, Locale } from "../../types/destination";
 import { tName, tRegion } from "../../lib/i18n/strings";
 import CrowdViz from "./CrowdViz";
+import SaveInterestButton from "./SaveInterestButton";
 
 type Props = {
   destination: Destination;
@@ -41,14 +42,7 @@ export default function DestinationCard({ destination, locale }: Props) {
 
       <div className="mt-4 flex items-center justify-between">
         <CrowdViz level={destination.crowd_level} />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-600"
-          >
-            Save (soon)
-          </button>
-        </div>
+        <SaveInterestButton destinationId={destination.id} />
       </div>
     </div>
   );
