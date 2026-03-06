@@ -2,7 +2,7 @@ import type { Category, Destination } from "../../types/destination";
 import type { PlannerInputs } from "../../types/planner";
 import type { Weights } from "../../types/scoring";
 import type { DatasetStats } from "../scoring/normalize";
-import { totalKm } from "../geo/route";
+import { totalKmDest } from "./utils";
 import { scoreDestination } from "../scoring/score";
 import { DEFAULT_WEIGHTS } from "../scoring/weights";
 import { maxStops, validateDay, type DayContext } from "./validate";
@@ -21,10 +21,6 @@ function sharesPreferredCategory(
   );
 }
 
-function totalKmDestinations(stops: Destination[]): number {
-  const points = stops.map((stop) => ({ lat: stop.lat, lng: stop.lng }));
-  return totalKm(points);
-}
 
 function bestInsertion(
   selected: Destination[],
@@ -35,7 +31,7 @@ function bestInsertion(
   }
 
   let bestRoute = [candidate, ...selected];
-  let bestDistance = totalKmDestinations(bestRoute);
+  let bestDistance = totalKmDest(bestRoute);
 
   for (let i = 1; i <= selected.length; i += 1) {
     const proposed = [
@@ -43,7 +39,7 @@ function bestInsertion(
       candidate,
       ...selected.slice(i),
     ];
-    const distance = totalKmDestinations(proposed);
+    const distance = totalKmDest(proposed);
     if (distance < bestDistance) {
       bestDistance = distance;
       bestRoute = proposed;
@@ -115,7 +111,7 @@ export function buildDayRoute(
     let accepted = false;
     for (const rankedCandidate of ranked) {
       const proposal = bestInsertion(selected, rankedCandidate.candidate);
-      const validation = validateDay(proposal, ctx, totalKmDestinations);
+      const validation = validateDay(proposal, ctx, totalKmDest);
       if (validation.ok) {
         selected.splice(0, selected.length, ...proposal);
         selectedCats.clear();
