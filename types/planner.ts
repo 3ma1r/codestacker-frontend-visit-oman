@@ -50,6 +50,9 @@ export type PlannerResult = {
     explanations: StopExplanation[];
   }>;
   totalKm: number;
+  cost: CostBreakdown;
+  overBudgetBy: number;
+  adjustments: string[];
 };
 
 export type CostBreakdown = {

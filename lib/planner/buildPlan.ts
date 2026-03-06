@@ -3,7 +3,14 @@ import type {
   Destination,
   RegionKey,
 } from "../../types/destination";
-import type { PlannerInputs, PlannerResult, StopExplanation } from "../../types/planner";
+import type {
+  PlannerInputs,
+  PlannerResult,
+  StopExplanation,
+  DayPlan,
+} from "../../types/planner";
+import { applyBudgetAdjustments } from "../cost/adjust";
+import { budgetThreshold, computeCost } from "../cost/calc";
 import { computeStats } from "../scoring/normalize";
 import { DEFAULT_WEIGHTS } from "../scoring/weights";
 import { scoreDestination } from "../scoring/score";
@@ -42,9 +49,50 @@ export function buildPlan(
     .map((id) => byId.get(id))
     .filter((destination): destination is Destination => Boolean(destination));
   const preferredCategories = derivePreferredCategories(inputs, savedDestinations);
+  const inputsWithPrefs = { ...inputs, preferredCategories };
+
+  const allRegionDestsByKey = destinations.reduce<Record<RegionKey, Destination[]>>(
+    (acc, destination) => {
+      acc[destination.regionKey].push(destination);
+      return acc;
+    },
+    {
+      muscat: [],
+      dakhiliya: [],
+      sharqiya: [],
+      dhofar: [],
+      batinah: [],
+      dhahira: [],
+    },
+  );
 
   let dayIndex = 1;
   const days: PlannerResult["days"] = [];
+  const routesByDay: Destination[][] = [];
+  const dayPlans: DayPlan[] = [];
+
+  const buildExplanations = (route: Destination[]) => {
+    const explanations: StopExplanation[] = [];
+    const selectedCats = new Set<Category>();
+    const currentRoutePoints: Array<{ lat: number; lng: number }> = [];
+    for (const stop of route) {
+      const breakdown = scoreDestination(
+        stop,
+        {
+          month: inputs.month,
+          preferredCategories,
+          stats,
+          selectedCats,
+          currentRoute: currentRoutePoints,
+        },
+        DEFAULT_WEIGHTS,
+      );
+      explanations.push({ destinationId: stop.id, top2: breakdown.top2 });
+      stop.categories.forEach((category) => selectedCats.add(category));
+      currentRoutePoints.push({ lat: stop.lat, lng: stop.lng });
+    }
+    return explanations;
+  };
 
   for (const block of allocation) {
     const region = block.region;
@@ -57,30 +105,10 @@ export function buildPlan(
         dayRegion: region,
         userPreferredCategories: preferredCategories,
       };
-      const inputsWithPrefs = { ...inputs, preferredCategories };
       const rawRoute = buildDayRoute(regionDests, ctx, inputsWithPrefs, stats);
       const improvedRoute = twoOptImprove(rawRoute, ctx, totalKmDest, validateDay);
       const dayPlan = scheduleDay(region, improvedRoute);
-
-      const explanations: StopExplanation[] = [];
-      const selectedCats = new Set<Category>();
-      const currentRoutePoints: Array<{ lat: number; lng: number }> = [];
-      for (const stop of improvedRoute) {
-        const breakdown = scoreDestination(
-          stop,
-          {
-            month: inputs.month,
-            preferredCategories,
-            stats,
-            selectedCats,
-            currentRoute: currentRoutePoints,
-          },
-          DEFAULT_WEIGHTS,
-        );
-        explanations.push({ destinationId: stop.id, top2: breakdown.top2 });
-        stop.categories.forEach((category) => selectedCats.add(category));
-        currentRoutePoints.push({ lat: stop.lat, lng: stop.lng });
-      }
+      const explanations = buildExplanations(improvedRoute);
 
       days.push({
         dayIndex,
@@ -89,18 +117,54 @@ export function buildPlan(
         dayPlan,
         explanations,
       });
+      routesByDay.push(improvedRoute);
+      dayPlans.push(dayPlan);
       dayIndex += 1;
     }
   }
 
-  const totalKm = days.reduce((sum, day) => sum + day.dayPlan.totalKm, 0);
+  const initialCost = computeCost(dayPlans, routesByDay, inputsWithPrefs);
+  const { adjustedRoutes, adjustments } = applyBudgetAdjustments(
+    routesByDay,
+    inputsWithPrefs,
+    budgetThreshold,
+    computeCost,
+    dayPlans,
+    allRegionDestsByKey,
+    validateDay,
+  );
+
+  let finalDays = days;
+  let finalDayPlans = dayPlans;
+  if (adjustments.length > 0) {
+    finalDays = days.map((day, index) => {
+      const updatedRoute = adjustedRoutes[index] ?? [];
+      const updatedDayPlan = scheduleDay(day.region, updatedRoute);
+      return {
+        ...day,
+        routeDestinationIds: updatedRoute.map((stop) => stop.id),
+        dayPlan: updatedDayPlan,
+        explanations: buildExplanations(updatedRoute),
+      };
+    });
+    finalDayPlans = finalDays.map((day) => day.dayPlan);
+  }
+
+  const finalCost = computeCost(finalDayPlans, adjustedRoutes, inputsWithPrefs);
+  const threshold = budgetThreshold(inputs.budget, finalDayPlans.length);
+  const overBudgetBy = Math.max(0, finalCost.total - threshold);
+
+  const totalKm = finalDays.reduce((sum, day) => sum + day.dayPlan.totalKm, 0);
 
   return {
     algorithmVersion: ALGORITHM_VERSION,
     inputs,
     regionAllocation: allocation,
-    days,
+    days: finalDays,
     totalKm,
+    cost: finalCost,
+    overBudgetBy,
+    adjustments,
   };
 }
 
