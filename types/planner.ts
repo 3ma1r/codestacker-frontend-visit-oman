@@ -51,3 +51,17 @@ export type PlannerResult = {
   }>;
   totalKm: number;
 };
+
+export type CostBreakdown = {
+  fuel: number;
+  tickets: number;
+  food: number;
+  hotel: number;
+  total: number;
+};
+
+export type BudgetThresholds = {
+  low: number;
+  medium: number;
+  luxury: number;
+};
