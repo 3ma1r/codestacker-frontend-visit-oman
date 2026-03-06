@@ -47,7 +47,7 @@ export default async function LocaleLayout({
           <Link href={`/${locale}/planner`}>Planner</Link>
         </nav>
         <div className="flex items-center gap-4">
-          <Link href={`/${locale}/planner`}>
+          <Link href={`/${locale}/saved`}>
             <SavedCounter />
           </Link>
           <Link href={switchPath} className="text-sm font-medium underline">
