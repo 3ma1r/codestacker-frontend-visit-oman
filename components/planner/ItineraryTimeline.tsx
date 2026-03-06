@@ -8,9 +8,17 @@ type Props = {
   day: PlannerResult["days"][number] | undefined;
   destinationsById: Map<string, Destination>;
   locale: Locale;
+  activeStopIndex: number;
+  onSelectStop: (index: number) => void;
 };
 
-export default function ItineraryTimeline({ day, destinationsById, locale }: Props) {
+export default function ItineraryTimeline({
+  day,
+  destinationsById,
+  locale,
+  activeStopIndex,
+  onSelectStop,
+}: Props) {
   if (!day) {
     return (
       <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
@@ -36,10 +44,15 @@ export default function ItineraryTimeline({ day, destinationsById, locale }: Pro
       {day.dayPlan.stops.map((stop) => {
         const destination = destinationsById.get(stop.destinationId);
         const top2 = explanations.get(stop.destinationId) ?? [];
+        const isActive = stop.order - 1 === activeStopIndex;
         return (
           <div
             key={stop.destinationId}
-            className="rounded-xl border border-zinc-200 bg-white p-4"
+            className={[
+              "cursor-pointer rounded-xl border bg-white p-4 transition",
+              isActive ? "border-emerald-400 bg-emerald-50" : "border-zinc-200",
+            ].join(" ")}
+            onClick={() => onSelectStop(stop.order - 1)}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>

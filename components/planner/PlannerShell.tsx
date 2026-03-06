@@ -12,6 +12,10 @@ import RegionAllocationSummary from "./RegionAllocationSummary";
 import DayTabs from "./DayTabs";
 import ItineraryTimeline from "./ItineraryTimeline";
 import CostBreakdownCard from "./CostBreakdownCard";
+import dynamic from "next/dynamic";
+import { tName } from "../../lib/i18n/strings";
+
+const TripMap = dynamic(() => import("./TripMap"), { ssr: false });
 
 type Props = {
   locale: Locale;
@@ -64,6 +68,7 @@ export default function PlannerShell({ locale }: Props) {
   );
   const [result, setResult] = useState(storedResult);
   const [selectedDay, setSelectedDay] = useState(1);
+  const [activeStopIndex, setActiveStopIndex] = useState(0);
 
   useEffect(() => {
     if (storedInputs) {
@@ -75,6 +80,7 @@ export default function PlannerShell({ locale }: Props) {
     if (storedResult) {
       setResult(storedResult);
       setSelectedDay(1);
+      setActiveStopIndex(0);
     }
   }, [storedResult]);
 
@@ -95,6 +101,16 @@ export default function PlannerShell({ locale }: Props) {
   };
 
   const selectedDayPlan = result?.days.find((day) => day.dayIndex === selectedDay);
+  const stopsForMap =
+    selectedDayPlan?.routeDestinationIds
+      .map((id) => destinationsById.get(id))
+      .filter((destination): destination is Destination => Boolean(destination))
+      .map((destination) => ({
+        id: destination.id,
+        name: tName(destination, locale),
+        lat: destination.lat,
+        lng: destination.lng,
+      })) ?? [];
 
   return (
     <div className="space-y-8">
@@ -112,14 +128,27 @@ export default function PlannerShell({ locale }: Props) {
           <DayTabs
             days={result.days.length}
             selectedDay={selectedDay}
-            onSelect={setSelectedDay}
+            onSelect={(day) => {
+              setSelectedDay(day);
+              setActiveStopIndex(0);
+            }}
           />
 
-          <ItineraryTimeline
-            day={selectedDayPlan}
-            destinationsById={destinationsById}
-            locale={locale}
-          />
+          <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
+            <ItineraryTimeline
+              day={selectedDayPlan}
+              destinationsById={destinationsById}
+              locale={locale}
+              activeStopIndex={activeStopIndex}
+              onSelectStop={setActiveStopIndex}
+            />
+            <TripMap
+              locale={locale}
+              stops={stopsForMap}
+              activeStopIndex={activeStopIndex}
+              onActiveStopChange={setActiveStopIndex}
+            />
+          </div>
 
           <CostBreakdownCard
             cost={result.cost}
