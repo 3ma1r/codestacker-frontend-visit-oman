@@ -15,3 +15,20 @@ export type RegionAllocation = {
   region: import("./destination").RegionKey;
   days: number;
 };
+
+export type PlannedStop = {
+  destinationId: string;
+  order: number;
+  travelKmFromPrev: number;
+  travelMinutesFromPrev: number;
+  visitMinutes: number;
+  startTime: string;
+  endTime: string;
+};
+
+export type DayPlan = {
+  region: import("./destination").RegionKey;
+  stops: PlannedStop[];
+  totalKm: number;
+  totalVisitMinutes: number;
+};
