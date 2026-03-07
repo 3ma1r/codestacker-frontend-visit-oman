@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { use } from "react";
 import CrowdViz from "../../../../components/destinations/CrowdViz";
 import MapPreview from "../../../../components/destinations/MapPreview";
 import MonthsIndicator from "../../../../components/destinations/MonthsIndicator";
@@ -6,9 +7,10 @@ import SaveInterestButton from "../../../../components/destinations/SaveInterest
 import { byIdMap, loadDestinations } from "../../../../lib/data/load";
 import { tCompany, tName, tRegion } from "../../../../lib/i18n/strings";
 import type { Locale } from "../../../../types/destination";
+import { isLocale } from "../../../../lib/i18n/locale";
 
 type Props = {
-  params: { id: string; locale: Locale };
+  params: Promise<{ id: string; locale: string }>;
 };
 
 function formatDuration(totalMinutes: number) {
@@ -24,17 +26,19 @@ function formatDuration(totalMinutes: number) {
 }
 
 export default function DestinationDetailsPage({ params }: Props) {
+  const { id, locale: rawLocale } = use(params);
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : "en";
   const destinations = loadDestinations();
   const map = byIdMap(destinations);
-  const destination = map.get(params.id);
+  const destination = map.get(id);
 
   if (!destination) {
     notFound();
   }
 
-  const description = `${tName(destination, params.locale)} is a ${
+  const description = `${tName(destination, locale)} is a ${
     destination.categories[0]
-  } destination in ${tRegion(destination, params.locale)}.`;
+  } destination in ${tRegion(destination, locale)}.`;
 
   return (
     <div className="space-y-6">
@@ -42,10 +46,10 @@ export default function DestinationDetailsPage({ params }: Props) {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold">
-              {tName(destination, params.locale)}
+              {tName(destination, locale)}
             </h1>
             <p className="text-sm text-zinc-500">
-              {tRegion(destination, params.locale)}
+              {tRegion(destination, locale)}
             </p>
           </div>
           <SaveInterestButton destinationId={destination.id} />
@@ -60,7 +64,7 @@ export default function DestinationDetailsPage({ params }: Props) {
         <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4">
           <div className="space-y-1">
             <div className="text-sm font-medium text-zinc-500">Company</div>
-            <div className="text-sm">{tCompany(destination, params.locale)}</div>
+            <div className="text-sm">{tCompany(destination, locale)}</div>
           </div>
           <div className="space-y-1">
             <div className="text-sm font-medium text-zinc-500">Categories</div>

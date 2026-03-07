@@ -39,23 +39,48 @@ export default async function LocaleLayout({
   const switchPath = getSwitchPath(locale, pathname);
 
   return (
-    <div dir={dir} className="min-h-screen bg-white text-zinc-950">
-      <header className="flex items-center justify-between border-b px-6 py-4">
-        <nav className="flex items-center gap-4 text-sm font-medium">
-          <Link href={`/${locale}`}>Discover</Link>
-          <Link href={`/${locale}/destinations`}>Destinations</Link>
-          <Link href={`/${locale}/planner`}>Planner</Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <Link href={`/${locale}/saved`}>
-            <SavedCounter />
-          </Link>
-          <Link href={switchPath} className="text-sm font-medium underline">
-            {locale === "en" ? "العربية" : "English"}
-          </Link>
+    <div dir={dir} className="min-h-screen bg-[#F6F1E7] text-neutral-900">
+      <header className="sticky top-0 z-50 bg-[#F6F1E7]/90 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-4 py-4">
+          <div className="flex items-center justify-between rounded-full border border-black/10 bg-white/70 px-6 py-3 shadow-sm">
+            <nav className="flex items-center gap-6 text-sm font-medium text-neutral-800">
+              <Link
+                className="transition hover:text-neutral-950 hover:underline"
+                href={`/${locale}`}
+              >
+                Discover
+              </Link>
+              <Link
+                className="transition hover:text-neutral-950 hover:underline"
+                href={`/${locale}/destinations`}
+              >
+                Destinations
+              </Link>
+              <Link
+                className="transition hover:text-neutral-950 hover:underline"
+                href={`/${locale}/planner`}
+              >
+                Planner
+              </Link>
+            </nav>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/${locale}/saved`}
+                className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-neutral-700 transition hover:bg-white/90"
+              >
+                <SavedCounter />
+              </Link>
+              <Link
+                href={switchPath}
+                className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-neutral-700 transition hover:bg-white/90"
+              >
+                {locale === "en" ? "العربية" : "English"}
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
-      <main className="px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
     </div>
   );
 }
