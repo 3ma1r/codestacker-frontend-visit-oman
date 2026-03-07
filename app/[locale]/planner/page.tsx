@@ -8,6 +8,7 @@ type Props = {
 
 export default async function PlannerPage({ params }: Props) {
   const { locale } = await params;
+  const isArabic = locale === "ar";
 
   if (!isLocale(locale)) {
     notFound();
@@ -16,9 +17,13 @@ export default async function PlannerPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">Trip planner</h1>
-        <p className="text-sm text-zinc-500">
-          Set your preferences and generate a deterministic itinerary.
+        <h1 className={`text-2xl font-semibold ${isArabic ? "text-right" : "text-left"}`}>
+          {isArabic ? "مخطط الرحلة" : "Trip planner"}
+        </h1>
+        <p className={`text-sm text-zinc-500 ${isArabic ? "text-right" : "text-left"}`}>
+          {isArabic
+            ? "اضبط تفضيلاتك وأنشئ خطة رحلة محددة."
+            : "Set your preferences and generate a deterministic itinerary."}
         </p>
       </header>
 

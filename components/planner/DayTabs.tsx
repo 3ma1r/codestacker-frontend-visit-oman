@@ -4,12 +4,14 @@ type Props = {
   days: number;
   selectedDay: number;
   onSelect: (dayIndex: number) => void;
+  locale: "en" | "ar";
 };
 
-export default function DayTabs({ days, selectedDay, onSelect }: Props) {
+export default function DayTabs({ days, selectedDay, onSelect, locale }: Props) {
   if (days === 0) {
     return null;
   }
+  const isArabic = locale === "ar";
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -28,7 +30,7 @@ export default function DayTabs({ days, selectedDay, onSelect }: Props) {
                 : "border-zinc-200 text-zinc-600",
             ].join(" ")}
           >
-            Day {dayIndex}
+            {isArabic ? "اليوم" : "Day"} {dayIndex}
           </button>
         );
       })}

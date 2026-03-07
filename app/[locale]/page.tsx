@@ -9,10 +9,10 @@ type Props = {
 };
 
 const CATEGORY_CARDS = [
-  { label: "Mountain", href: "category=mountain" },
-  { label: "Desert", href: "category=desert" },
-  { label: "Sea", href: "category=beach" },
-  { label: "Culture", href: "category=culture" },
+  { label: { en: "Mountain", ar: "جبال" }, href: "category=mountain" },
+  { label: { en: "Desert", ar: "صحراء" }, href: "category=desert" },
+  { label: { en: "Sea", ar: "بحر" }, href: "category=beach" },
+  { label: { en: "Culture", ar: "ثقافة" }, href: "category=culture" },
 ];
 
 export default async function DiscoverPage({ params }: Props) {
@@ -78,18 +78,18 @@ export default async function DiscoverPage({ params }: Props) {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORY_CARDS.map((card) => (
             <Link
-              key={card.label}
+              key={card.label.en}
               href={`/${locale}/destinations?${card.href}`}
               className="rounded-2xl border border-black/10 bg-white p-5 text-sm font-semibold text-neutral-800 shadow-sm transition hover:-translate-y-0.5 hover:border-black/20"
             >
-              {card.label}
+              {card.label[isArabic ? "ar" : "en"]}
             </Link>
           ))}
         </div>
       </section>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center justify-between ${isArabic ? "text-right" : "text-left"}`}>
           <h2 className="text-xl font-semibold">
             {isArabic ? "وجهات مميزة" : "Featured destinations"}
           </h2>

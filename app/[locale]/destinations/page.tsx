@@ -86,13 +86,21 @@ function parseSort(value?: string | string[]): BrowseQuery["sort"] | undefined {
   return value === "crowd" || value === "cost" ? value : undefined;
 }
 
-function getActiveFilters(query: BrowseQuery) {
+function getActiveFilters(query: BrowseQuery, locale: Locale) {
+  const isArabic = locale === "ar";
+  const labelMap = {
+    category: isArabic ? "التصنيف" : "Category",
+    region: isArabic ? "المنطقة" : "Region",
+    month: isArabic ? "الشهر" : "Month",
+    season: isArabic ? "الموسم" : "Season",
+    sort: isArabic ? "الترتيب" : "Sort",
+  };
   const chips: string[] = [];
-  if (query.category) chips.push(`Category: ${query.category}`);
-  if (query.region) chips.push(`Region: ${query.region}`);
-  if (query.month) chips.push(`Month: ${query.month}`);
-  if (query.season) chips.push(`Season: ${query.season}`);
-  if (query.sort) chips.push(`Sort: ${query.sort}`);
+  if (query.category) chips.push(`${labelMap.category}: ${query.category}`);
+  if (query.region) chips.push(`${labelMap.region}: ${query.region}`);
+  if (query.month) chips.push(`${labelMap.month}: ${query.month}`);
+  if (query.season) chips.push(`${labelMap.season}: ${query.season}`);
+  if (query.sort) chips.push(`${labelMap.sort}: ${query.sort}`);
   return chips;
 }
 
@@ -150,6 +158,18 @@ function buildQueryString(
 export default async function DestinationsPage({ params, searchParams }: Props) {
   const resolvedParams = await params;
   const resolvedSearch = await searchParams;
+  const isArabic = resolvedParams.locale === "ar";
+  const labels = {
+    title: isArabic ? "تصفح الوجهات" : "Browse destinations",
+    subtitle: isArabic
+      ? "فلتر حسب التصنيف أو المنطقة أو الموسم."
+      : "Filter by category, region, or season. Sorting is deterministic.",
+    noFilters: isArabic ? "لا توجد فلاتر مفعّلة." : "No filters applied.",
+    showing: isArabic ? "عرض" : "Showing",
+    of: isArabic ? "من" : "of",
+    prev: isArabic ? "السابق" : "Prev",
+    next: isArabic ? "التالي" : "Next",
+  };
   const query: BrowseQuery = {
     category: parseCategory(resolvedSearch.category),
     region: parseRegion(resolvedSearch.region),
@@ -170,14 +190,16 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
   const startIndex = (safePage - 1) * PAGE_SIZE;
   const endIndex = Math.min(total, startIndex + PAGE_SIZE);
   const paged = searched.slice(startIndex, endIndex);
-  const chips = getActiveFilters(query);
+  const chips = getActiveFilters(query, resolvedParams.locale);
 
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">Browse destinations</h1>
-        <p className="text-sm text-zinc-500">
-          Filter by category, region, or season. Sorting is deterministic.
+        <h1 className={`text-2xl font-semibold ${isArabic ? "text-right" : "text-left"}`}>
+          {labels.title}
+        </h1>
+        <p className={`text-sm text-zinc-500 ${isArabic ? "text-right" : "text-left"}`}>
+          {labels.subtitle}
         </p>
       </header>
 
@@ -187,11 +209,12 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
         season={resolvedSearch.season as string | undefined}
         sort={resolvedSearch.sort as string | undefined}
         query={searchQuery}
+        locale={resolvedParams.locale}
       />
 
-      <div className="flex flex-wrap gap-2">
+      <div className={`flex flex-wrap gap-2 ${isArabic ? "text-right" : "text-left"}`}>
         {chips.length === 0 ? (
-          <span className="text-sm text-zinc-500">No filters applied.</span>
+          <span className="text-sm text-zinc-500">{labels.noFilters}</span>
         ) : (
           chips.map((chip) => (
             <span
@@ -204,9 +227,10 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
         )}
       </div>
 
-      <div className="flex items-center justify-between text-sm text-zinc-500">
+      <div className={`flex items-center justify-between text-sm text-zinc-500 ${isArabic ? "flex-row-reverse" : ""}`}>
         <span>
-          Showing {total === 0 ? 0 : startIndex + 1}–{endIndex} of {total}
+          {labels.showing} {total === 0 ? 0 : startIndex + 1}–{endIndex}{" "}
+          {labels.of} {total}
         </span>
         <div className="flex gap-2">
           <Link
@@ -221,7 +245,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
                 : "border-zinc-200 text-zinc-600",
             ].join(" ")}
           >
-            Prev
+            {labels.prev}
           </Link>
           <Link
             href={`/${resolvedParams.locale}/destinations${buildQueryString(
@@ -235,7 +259,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
                 : "border-zinc-200 text-zinc-600",
             ].join(" ")}
           >
-            Next
+            {labels.next}
           </Link>
         </div>
       </div>

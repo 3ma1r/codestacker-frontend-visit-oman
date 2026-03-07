@@ -19,10 +19,11 @@ export default function ItineraryTimeline({
   activeStopIndex,
   onSelectStop,
 }: Props) {
+  const isArabic = locale === "ar";
   if (!day) {
     return (
       <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
-        No day selected.
+        {isArabic ? "لم يتم اختيار يوم." : "No day selected."}
       </div>
     );
   }
@@ -30,7 +31,7 @@ export default function ItineraryTimeline({
   if (day.dayPlan.stops.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
-        No stops scheduled for this day.
+        {isArabic ? "لا توجد محطات لهذا اليوم." : "No stops scheduled for this day."}
       </div>
     );
   }
@@ -64,8 +65,10 @@ export default function ItineraryTimeline({
                 </div>
               </div>
               <div className="text-xs text-zinc-500">
-                Travel: {stop.travelKmFromPrev.toFixed(1)} km (
-                {stop.travelMinutesFromPrev} min) · Visit {stop.visitMinutes} min
+                {isArabic ? "المسافة" : "Travel"}: {stop.travelKmFromPrev.toFixed(1)}{" "}
+                {isArabic ? "كم" : "km"} ({stop.travelMinutesFromPrev}{" "}
+                {isArabic ? "د" : "min"}) · {isArabic ? "الزيارة" : "Visit"}{" "}
+                {stop.visitMinutes} {isArabic ? "د" : "min"}
               </div>
             </div>
 

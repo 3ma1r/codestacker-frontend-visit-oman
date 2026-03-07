@@ -112,6 +112,11 @@ export default function PlannerShell({ locale }: Props) {
         lng: destination.lng,
       })) ?? [];
 
+  const isArabic = locale === "ar";
+  const emptyLabel = isArabic
+    ? "أنشئ خطة لعرض المسار والتكاليف والتفسيرات."
+    : "Generate a plan to see the itinerary, costs, and explanations.";
+
   return (
     <div className="space-y-8">
       <TripForm
@@ -119,11 +124,12 @@ export default function PlannerShell({ locale }: Props) {
         availableCategories={availableCategories}
         onChange={setFormValue}
         onSubmit={handleSubmit}
+        locale={locale}
       />
 
       {result ? (
         <div className="space-y-6">
-          <RegionAllocationSummary allocation={result.regionAllocation} />
+          <RegionAllocationSummary allocation={result.regionAllocation} locale={locale} />
 
           <DayTabs
             days={result.days.length}
@@ -132,6 +138,7 @@ export default function PlannerShell({ locale }: Props) {
               setSelectedDay(day);
               setActiveStopIndex(0);
             }}
+            locale={locale}
           />
 
           <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
@@ -155,11 +162,12 @@ export default function PlannerShell({ locale }: Props) {
             inputs={result.inputs}
             overBudgetBy={result.overBudgetBy}
             adjustments={result.adjustments}
+            locale={locale}
           />
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-500">
-          Generate a plan to see the itinerary, costs, and explanations.
+          {emptyLabel}
         </div>
       )}
     </div>
