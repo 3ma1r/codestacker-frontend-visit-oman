@@ -4,11 +4,34 @@ type Props = {
 };
 
 export default function MapPreview({ lat, lng }: Props) {
+  const center = `${lat},${lng}`;
+  const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+  const embedSrc = `https://www.google.com/maps?q=${lat},${lng}&z=12&output=embed`;
+
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-600">
-      <div className="mb-2 font-medium text-zinc-800">Map preview</div>
-      <div>Lat: {lat.toFixed(5)}</div>
-      <div>Lng: {lng.toFixed(5)}</div>
+    <div className="rounded-lg border border-zinc-200 bg-white p-4 text-sm text-zinc-600">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="font-medium text-zinc-800">Map preview</div>
+        <a
+          href={mapsLink}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs font-medium text-zinc-600 underline"
+        >
+          Open map
+        </a>
+      </div>
+      <div className="h-64 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+        <iframe
+          src={embedSrc}
+          className="h-64 w-full rounded-md border"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      </div>
+      <div className="mt-2 text-xs text-zinc-500">
+        Lat: {lat.toFixed(5)} · Lng: {lng.toFixed(5)}
+      </div>
     </div>
   );
 }
