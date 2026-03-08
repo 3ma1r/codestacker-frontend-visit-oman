@@ -1,8 +1,10 @@
 import Link from "next/link";
-import FeaturedMiniCard from "../../components/home/FeaturedMiniCard";
+import FeaturedImageCard from "../../components/home/FeaturedImageCard";
 import { getFeaturedDestinations } from "../../lib/data/featured";
 import { loadDestinations } from "../../lib/data/load";
 import type { Locale } from "../../types/destination";
+import path from "node:path";
+import fs from "node:fs";
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -19,12 +21,93 @@ export default async function DiscoverPage({ params }: Props) {
   const destinations = loadDestinations();
   const { locale } = await params;
   const currentMonth = new Date().getMonth() + 1;
-  const featured = getFeaturedDestinations(destinations, currentMonth, 6);
+  const featured = getFeaturedDestinations(destinations, currentMonth, 12);
   const isArabic = locale === "ar";
   const regionsCount = new Set(destinations.map((dest) => dest.regionKey)).size;
   const categoriesCount = new Set(
     destinations.flatMap((dest) => dest.categories),
   ).size;
+
+  const monthNamesEn = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const monthNamesAr = [
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو",
+    "يونيو",
+    "يوليو",
+    "أغسطس",
+    "سبتمبر",
+    "أكتوبر",
+    "نوفمبر",
+    "ديسمبر",
+  ];
+
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+  const imageCache = new Map<string, string>();
+  const nameImageCache = new Map<string, string>();
+  const fallbackImage = "/oman.webp";
+
+  const resolveImageForId = (id: string) => {
+    if (imageCache.has(id)) {
+      return imageCache.get(id) as string;
+    }
+    const basePath = path.join(
+      process.cwd(),
+      "public",
+      "images",
+      "destinations",
+      id,
+    );
+    for (const ext of imageExtensions) {
+      const filePath = `${basePath}${ext}`;
+      if (fs.existsSync(filePath)) {
+        const url = `/images/destinations/${id}${ext}`;
+        imageCache.set(id, url);
+        return url;
+      }
+    }
+    return null;
+  };
+
+  const resolveImage = (destinationId: string, nameEn: string) => {
+    const direct = resolveImageForId(destinationId);
+    if (direct) {
+      nameImageCache.set(nameEn, direct);
+      return direct;
+    }
+    if (nameImageCache.has(nameEn)) {
+      return nameImageCache.get(nameEn) as string;
+    }
+    return fallbackImage;
+  };
+
+  const uniqueFeatured = [];
+  const seenNames = new Set<string>();
+  for (const destination of featured) {
+    if (seenNames.has(destination.name.en)) {
+      continue;
+    }
+    uniqueFeatured.push(destination);
+    seenNames.add(destination.name.en);
+    if (uniqueFeatured.length >= 6) {
+      break;
+    }
+  }
   return (
     <div className="space-y-12">
       <section
@@ -163,19 +246,28 @@ export default async function DiscoverPage({ params }: Props) {
             {isArabic ? "وجهات مميزة" : "Featured destinations"}
           </h2>
           <span className="text-sm text-zinc-500">
-            {isArabic ? "الشهر: " : "Month: "}
-            {currentMonth}
+            {isArabic ? "الشهر الحالي: " : "Current Month: "}
+            {isArabic ? monthNamesAr[currentMonth - 1] : monthNamesEn[currentMonth - 1]}
           </span>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((destination) => (
+          {uniqueFeatured.map((destination) => (
             <div key={destination.id} className="min-w-0">
-              <FeaturedMiniCard
+              <FeaturedImageCard
                 destination={destination}
                 locale={locale}
+                imageSrc={resolveImage(destination.id, destination.name.en)}
               />
             </div>
           ))}
+        </div>
+        <div className="flex justify-center pt-6">
+          <Link
+            href={`/${locale}/destinations`}
+            className="rounded-full bg-orange-500 px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+          >
+            {isArabic ? "عرض المزيد" : "View More"}
+          </Link>
         </div>
       </section>
     </div>
