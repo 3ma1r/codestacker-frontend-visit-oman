@@ -17,8 +17,9 @@ const CATEGORY_CARDS = [
 
 export default async function DiscoverPage({ params }: Props) {
   const destinations = loadDestinations();
-  const featured = getFeaturedDestinations(destinations, 1, 6);
   const { locale } = await params;
+  const currentMonth = new Date().getMonth() + 1;
+  const featured = getFeaturedDestinations(destinations, currentMonth, 6);
   const isArabic = locale === "ar";
   const regionsCount = new Set(destinations.map((dest) => dest.regionKey)).size;
   const categoriesCount = new Set(
@@ -26,16 +27,26 @@ export default async function DiscoverPage({ params }: Props) {
   ).size;
   return (
     <div className="space-y-12">
-      <section className="rounded-[32px] border border-black/10 bg-[#F6F1E7] px-8 py-12">
-        <div className={`space-y-5 ${isArabic ? "text-right" : "text-left"}`}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-neutral-700 shadow-sm">
-              <span className="text-orange-500">●</span>
+      <section
+        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen overflow-hidden"
+        style={{
+          backgroundImage: "url('/oman.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
+        <div className="absolute inset-0 backdrop-blur-[2px]" />
+        <div className="relative px-8 pb-24 pt-32 md:pb-28 md:pt-36">
+          <div className={`mx-auto max-w-6xl space-y-5 ${isArabic ? "text-right" : "text-left"}`}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+              <span className="text-orange-400">●</span>
               <span>{isArabic ? "استكشف عُمان" : "Explore Oman"}</span>
             </div>
-            <h1 className="text-4xl font-bold uppercase tracking-tight text-neutral-900 md:text-6xl">
+            <h1 className="text-4xl font-bold uppercase tracking-tight text-white md:text-6xl">
               {isArabic ? "اكتشف عُمان" : "EXPLORE OMAN"}
             </h1>
-            <p className="max-w-xl text-sm text-neutral-600 md:text-base">
+            <p className="max-w-xl text-sm text-white/90 md:text-base">
               {isArabic
                 ? "استكشف الوجهات والمواسم بأسلوب مبني على البيانات."
                 : "A data-driven preview of destinations, seasons, and travel vibes."}
@@ -49,23 +60,81 @@ export default async function DiscoverPage({ params }: Props) {
               </Link>
               <Link
                 href={`/${locale}/destinations`}
-                className="rounded-full border border-black/10 bg-white px-5 py-2 text-sm font-semibold text-neutral-700 transition hover:bg-white/90"
+                className="rounded-full border border-white/40 bg-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
               >
                 {isArabic ? "تصفح الوجهات" : "Browse destinations"}
               </Link>
             </div>
+          </div>
         </div>
       </section>
 
-      <section className={`flex flex-wrap gap-3 ${isArabic ? "text-right" : "text-left"}`}>
-        <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-neutral-700 shadow-sm">
-          {destinations.length} {isArabic ? "وجهة" : "destinations"}
-        </div>
-        <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-neutral-700 shadow-sm">
-          {regionsCount} {isArabic ? "مناطق" : "regions"}
-        </div>
-        <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-neutral-700 shadow-sm">
-          {categoriesCount} {isArabic ? "تصنيفات" : "categories"}
+      <section className="relative py-3 md:py-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.1)_1px,transparent_0)] [background-size:18px_18px]" />
+        <div
+          className={`grid items-start gap-6 md:gap-8 lg:grid-cols-2 ${
+            isArabic ? "text-right" : "text-left"
+          }`}
+        >
+          <div className="flex flex-col gap-6 self-start">
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">
+                {isArabic ? "استكشف عبر عُمان" : "Explore Across Oman"}
+              </p>
+              <h2 className="text-3xl font-semibold text-neutral-900 md:text-4xl">
+                {isArabic
+                  ? "طريقة أذكى لاستكشاف عُمان"
+                  : "A Smarter Way to Explore Oman"}
+              </h2>
+              <p className="max-w-xl text-sm text-neutral-600 md:text-base">
+                {isArabic
+                  ? "اكتشف عُمان عبر المناطق والوجهات وتجارب السفر بطريقة أوضح وأكثر إلهامًا. اعثر على الأماكن التي تناسب اهتماماتك وخطط للرحلات بثقة أكبر."
+                  : "Discover Oman through regions, destinations, and travel experiences in a clearer and more inspiring way. Find places that match your interests and plan journeys with more confidence."}
+              </p>
+            </div>
+            <div className="mt-2 grid items-end gap-3 sm:grid-cols-3">
+              <button
+                type="button"
+                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+              >
+                <div className="text-5xl font-semibold leading-none text-neutral-900">
+                  {destinations.length}
+                </div>
+                <div className="text-xs uppercase tracking-[0.25em] text-neutral-500">
+                  {isArabic ? "وجهة" : "Destinations"}
+                </div>
+              </button>
+              <button
+                type="button"
+                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+              >
+                <div className="text-4xl font-semibold leading-none text-neutral-900">
+                  {regionsCount}
+                </div>
+                <div className="text-xs uppercase tracking-[0.25em] text-neutral-500">
+                  {isArabic ? "مناطق" : "Regions"}
+                </div>
+              </button>
+              <button
+                type="button"
+                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+              >
+                <div className="text-4xl font-semibold leading-none text-neutral-900">
+                  {categoriesCount}
+                </div>
+                <div className="text-xs uppercase tracking-[0.25em] text-neutral-500">
+                  {isArabic ? "تصنيفات" : "Categories"}
+                </div>
+              </button>
+            </div>
+          </div>
+          <div className="relative -mt-2 flex items-start justify-center lg:justify-end">
+            <img
+              src="/map.png"
+              alt="Oman map"
+              className="h-auto w-full max-w-[260px] object-contain sm:max-w-xs md:max-w-sm"
+            />
+          </div>
         </div>
       </section>
 
@@ -94,7 +163,8 @@ export default async function DiscoverPage({ params }: Props) {
             {isArabic ? "وجهات مميزة" : "Featured destinations"}
           </h2>
           <span className="text-sm text-zinc-500">
-            {isArabic ? "الشهر: 1" : "Month: 1"}
+            {isArabic ? "الشهر: " : "Month: "}
+            {currentMonth}
           </span>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

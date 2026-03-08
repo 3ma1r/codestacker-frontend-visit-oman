@@ -12,8 +12,8 @@ export default function SavedCounter() {
   }, []);
 
   if (!mounted) {
-    return <span className="text-sm text-zinc-500">Saved: —</span>;
+    return <span className="text-sm text-zinc-500">—</span>;
   }
 
-  return <span className="text-sm text-zinc-500">Saved: {count}</span>;
+  return <span className="text-sm text-zinc-500">{count}</span>;
 }
