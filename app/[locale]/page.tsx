@@ -228,15 +228,34 @@ export default async function DiscoverPage({ params }: Props) {
           {isArabic ? "استكشف حسب التصنيف" : "Explore by category"}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORY_CARDS.map((card) => (
-            <Link
-              key={card.label.en}
-              href={`/${locale}/destinations?${card.href}`}
-              className="rounded-2xl border border-black/10 bg-white p-5 text-sm font-semibold text-neutral-800 shadow-sm transition hover:-translate-y-0.5 hover:border-black/20"
-            >
-              {card.label[isArabic ? "ar" : "en"]}
-            </Link>
-          ))}
+          {CATEGORY_CARDS.map((card) => {
+            const imageMap: Record<string, string> = {
+              mountain: "/images/category/mountain.jpg",
+              desert: "/images/category/desert.avif",
+              beach: "/images/category/sea.jpg",
+              culture: "/images/category/culture.jpg",
+            };
+            const imageSrc = imageMap[card.href.split("=")[1]] ?? "/images/category/sea.jpg";
+            return (
+              <Link
+                key={card.label.en}
+                href={`/${locale}/destinations?${card.href}`}
+                className="group relative overflow-hidden rounded-3xl"
+              >
+                <img
+                  src={imageSrc}
+                  alt={card.label[isArabic ? "ar" : "en"]}
+                  className="h-44 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent backdrop-blur-[1px]" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="text-lg font-semibold text-white">
+                    {card.label[isArabic ? "ar" : "en"]}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
