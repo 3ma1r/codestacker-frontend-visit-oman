@@ -223,19 +223,26 @@ export default async function DiscoverPage({ params }: Props) {
 
       <section className="space-y-4">
         <h2
-          className={`text-xl font-semibold ${isArabic ? "text-right" : "text-left"}`}
+          className={`text-2xl font-semibold tracking-tight ${isArabic ? "text-right" : "text-left"}`}
         >
           {isArabic ? "استكشف حسب التصنيف" : "Explore by category"}
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORY_CARDS.map((card) => {
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ...CATEGORY_CARDS,
+            { label: { en: "Nature", ar: "طبيعة" }, href: "category=nature" },
+            { label: { en: "Food", ar: "طعام" }, href: "category=food" },
+          ].map((card) => {
             const imageMap: Record<string, string> = {
               mountain: "/images/category/mountain.jpg",
               desert: "/images/category/desert.avif",
               beach: "/images/category/sea.jpg",
               culture: "/images/category/culture.jpg",
+              nature: "/images/category/nature.jpg",
+              food: "/images/category/food.jpeg",
             };
-            const imageSrc = imageMap[card.href.split("=")[1]] ?? "/images/category/sea.jpg";
+            const key = card.href.split("=")[1];
+            const imageSrc = imageMap[key] ?? "/images/category/sea.jpg";
             return (
               <Link
                 key={card.label.en}
@@ -247,10 +254,13 @@ export default async function DiscoverPage({ params }: Props) {
                   alt={card.label[isArabic ? "ar" : "en"]}
                   className="h-44 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent backdrop-blur-[1px]" />
-                <div className="absolute bottom-4 left-4 right-4">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent backdrop-blur-[0.5px]" />
+                <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between">
                   <div className="text-lg font-semibold text-white">
                     {card.label[isArabic ? "ar" : "en"]}
+                  </div>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white">
+                    →
                   </div>
                 </div>
               </Link>
@@ -261,7 +271,7 @@ export default async function DiscoverPage({ params }: Props) {
 
       <section className="space-y-4">
         <div className={`flex items-center justify-between ${isArabic ? "text-right" : "text-left"}`}>
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-2xl font-semibold tracking-tight">
             {isArabic ? "وجهات مميزة" : "Featured destinations"}
           </h2>
           <span className="text-sm text-zinc-500">
