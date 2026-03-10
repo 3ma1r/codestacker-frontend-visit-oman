@@ -161,10 +161,10 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
   const resolvedSearch = await searchParams;
   const isArabic = resolvedParams.locale === "ar";
   const labels = {
-    title: isArabic ? "تصفح الوجهات" : "Browse destinations",
+    title: isArabic ? "استكشف وجهات عُمان" : "Explore Destinations Across Oman",
     subtitle: isArabic
-      ? "فلتر حسب التصنيف أو المنطقة أو الموسم."
-      : "Filter by category, region, or season. Sorting is deterministic.",
+      ? "اكتشف الجبال والشواطئ والصحارى والمعالم الثقافية عبر أنحاء البلاد."
+      : "Discover mountains, beaches, deserts, and cultural landmarks across the country.",
     noFilters: isArabic ? "لا توجد فلاتر مفعّلة." : "No filters applied.",
     showing: isArabic ? "عرض" : "Showing",
     of: isArabic ? "من" : "of",
@@ -182,7 +182,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
   const destinations = loadDestinations();
   const results = filterAndSortDestinations(destinations, query);
   const searchQuery =
-    typeof resolvedSearch.q === "string" ? resolvedSearch.q.trim() : "";
+    typeof resolvedSearch.q === "string" ? resolvedSearch.q : "";
   const searched = filterByQuery(results, searchQuery, resolvedParams.locale);
   const page = parsePage(resolvedSearch.page);
   const total = searched.length;
@@ -195,23 +195,43 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
 
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className={`text-2xl font-semibold ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.title}
-        </h1>
-        <p className={`text-sm text-zinc-500 ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.subtitle}
-        </p>
-      </header>
+      <section
+        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen overflow-hidden"
+        style={{
+          backgroundImage: "url('/oman2.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/25" />
+        <div className="absolute inset-0 backdrop-blur-[1px]" />
+        <div className="relative px-8 pb-24 pt-36 md:pb-28 md:pt-40">
+          <div className={`mx-auto max-w-6xl ${isArabic ? "text-right" : "text-left"}`}>
+            <div className="max-w-2xl space-y-3">
+              <h1 className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
+                {labels.title}
+              </h1>
+              <p className="text-sm text-white/85 sm:text-base">
+                {labels.subtitle}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <FiltersBar
-        category={resolvedSearch.category as string | undefined}
-        region={resolvedSearch.region as string | undefined}
-        season={resolvedSearch.season as string | undefined}
-        sort={resolvedSearch.sort as string | undefined}
-        query={searchQuery}
-        locale={resolvedParams.locale}
-      />
+      <div className="relative -mt-14 px-4 sm:-mt-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-3xl bg-white/70 p-4 shadow-lg backdrop-blur sm:p-5">
+          <FiltersBar
+            category={resolvedSearch.category as string | undefined}
+            region={resolvedSearch.region as string | undefined}
+            season={resolvedSearch.season as string | undefined}
+            sort={resolvedSearch.sort as string | undefined}
+            query={searchQuery}
+            locale={resolvedParams.locale}
+          />
+        </div>
+      </div>
 
       <div className={`flex flex-wrap gap-2 ${isArabic ? "text-right" : "text-left"}`}>
         {chips.length === 0 ? (
@@ -239,6 +259,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
               resolvedSearch,
               safePage - 1,
             )}`}
+            scroll={false}
             className={[
               "rounded-full border px-3 py-1 text-xs font-medium",
               safePage <= 1
@@ -253,6 +274,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
               resolvedSearch,
               safePage + 1,
             )}`}
+            scroll={false}
             className={[
               "rounded-full border px-3 py-1 text-xs font-medium",
               safePage >= totalPages
