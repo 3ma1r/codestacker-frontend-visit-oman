@@ -157,7 +157,7 @@ export default function FiltersBar({
           type="text"
           value={query ?? ""}
           onChange={(event) =>
-            updateParam("q", event.target.value.trim(), { resetPage: true })
+            updateParam("q", event.target.value, { resetPage: true })
           }
           placeholder={labels.placeholder}
           className={fieldClass}
