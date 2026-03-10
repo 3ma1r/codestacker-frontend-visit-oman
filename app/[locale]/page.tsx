@@ -60,7 +60,7 @@ export default async function DiscoverPage({ params }: Props) {
   const imageExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
   const imageCache = new Map<string, string>();
   const nameImageCache = new Map<string, string>();
-  const fallbackImage = "/oman.webp";
+  const fallbackImage = "/globe.svg";
 
   const resolveImageForId = (id: string) => {
     if (imageCache.has(id)) {
@@ -84,10 +84,19 @@ export default async function DiscoverPage({ params }: Props) {
     return null;
   };
 
+  for (const destination of destinations) {
+    if (nameImageCache.has(destination.name.en)) {
+      continue;
+    }
+    const image = resolveImageForId(destination.id);
+    if (image) {
+      nameImageCache.set(destination.name.en, image);
+    }
+  }
+
   const resolveImage = (destinationId: string, nameEn: string) => {
     const direct = resolveImageForId(destinationId);
     if (direct) {
-      nameImageCache.set(nameEn, direct);
       return direct;
     }
     if (nameImageCache.has(nameEn)) {
