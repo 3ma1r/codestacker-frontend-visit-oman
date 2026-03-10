@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { isLocale, type Locale } from "../../../lib/i18n/locale";
 import { loadDestinations } from "../../../lib/data/load";
-import DestinationCard from "../../../components/destinations/DestinationCard";
+import SavedFeaturedCard from "../../../components/saved/SavedFeaturedCard";
 import { useAppStore } from "../../../store/useAppStore";
 import type { Destination } from "../../../types/destination";
 
@@ -56,18 +56,15 @@ export default function SavedPage() {
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {savedDestinations.map((destination) => (
-            <div key={destination.id} className="relative">
-              <DestinationCard destination={destination} locale={locale} />
-              <button
-                type="button"
-                onClick={() => toggleSave(destination.id)}
-                className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-zinc-700 shadow"
-              >
-                {locale === "ar" ? "إزالة" : "Remove"}
-              </button>
-            </div>
+            <SavedFeaturedCard
+              key={destination.id}
+              destination={destination}
+              locale={locale}
+              onRemove={toggleSave}
+              allDestinations={destinations}
+            />
           ))}
         </div>
       )}
