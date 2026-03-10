@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DestinationCard from "../../../components/destinations/DestinationCard";
+import BrowseDestinationCard from "../../../components/destinations/BrowseDestinationCard";
 import FiltersBar from "../../../components/destinations/FiltersBar";
 import { loadDestinations } from "../../../lib/data/load";
 import { filterAndSortDestinations } from "../../../lib/data/query";
@@ -12,6 +12,7 @@ import type {
   Destination,
 } from "../../../types/destination";
 import { tName } from "../../../lib/i18n/strings";
+import { resolveFeaturedImage } from "../../../lib/home/featuredImage";
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -264,12 +265,13 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {paged.map((destination) => (
-          <DestinationCard
+          <BrowseDestinationCard
             key={destination.id}
             destination={destination}
             locale={resolvedParams.locale}
+            imageSrc={resolveFeaturedImage(destination, destinations)}
           />
         ))}
       </div>
