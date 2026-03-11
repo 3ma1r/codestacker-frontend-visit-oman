@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import type { Destination, Locale } from "../../types/destination";
 import { tName, tRegion } from "../../lib/i18n/strings";
 
-const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".avif"] as const;
+const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"] as const;
 
 type Props = {
   destination: Destination;

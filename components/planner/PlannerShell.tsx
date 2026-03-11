@@ -117,59 +117,134 @@ export default function PlannerShell({ locale }: Props) {
     ? "أنشئ خطة لعرض المسار والتكاليف والتفسيرات."
     : "Generate a plan to see the itinerary, costs, and explanations.";
 
+  const totalStops =
+    result?.days.reduce((sum, day) => sum + day.dayPlan.stops.length, 0) ?? 0;
+
   return (
     <div className="space-y-8">
-      <TripForm
-        value={formValue}
-        availableCategories={availableCategories}
-        onChange={setFormValue}
-        onSubmit={handleSubmit}
-        locale={locale}
-      />
-
-      {result ? (
+      <div className="grid gap-6 lg:grid-cols-[1.05fr,2fr]">
         <div className="space-y-6">
-          <RegionAllocationSummary allocation={result.regionAllocation} locale={locale} />
-
-          <DayTabs
-            days={result.days.length}
-            selectedDay={selectedDay}
-            onSelect={(day) => {
-              setSelectedDay(day);
-              setActiveStopIndex(0);
-            }}
-            locale={locale}
-          />
-
-          <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-            <ItineraryTimeline
-              day={selectedDayPlan}
-              destinationsById={destinationsById}
+          <div className="relative -mt-16">
+            <TripForm
+              value={formValue}
+              availableCategories={availableCategories}
+              onChange={setFormValue}
+              onSubmit={handleSubmit}
               locale={locale}
-              activeStopIndex={activeStopIndex}
-              onSelectStop={setActiveStopIndex}
-            />
-            <TripMap
-              locale={locale}
-              stops={stopsForMap}
-              activeStopIndex={activeStopIndex}
-              onActiveStopChange={setActiveStopIndex}
             />
           </div>
 
-          <CostBreakdownCard
-            cost={result.cost}
-            inputs={result.inputs}
-            overBudgetBy={result.overBudgetBy}
-            adjustments={result.adjustments}
-            locale={locale}
-          />
+          {result && (
+            <div className="grid justify-items-center gap-3 text-zinc-600 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex w-full max-w-[170px] flex-col items-center justify-center gap-1 rounded-2xl border border-black/50 px-2.5 py-2 text-center transition hover:-translate-y-0.5 hover:border-black/80 active:translate-y-0 active:border-black">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+                  {isArabic ? "الأيام" : "Trip length"}
+                </div>
+                <div className="text-base font-semibold text-zinc-900">
+                  {result.inputs.days} {isArabic ? "أيام" : "days"}
+                </div>
+              </div>
+              <div className="flex w-full max-w-[170px] flex-col items-center justify-center gap-1 rounded-2xl border border-black/50 px-2.5 py-2 text-center transition hover:-translate-y-0.5 hover:border-black/80 active:translate-y-0 active:border-black">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+                  {isArabic ? "الوجهات" : "Places"}
+                </div>
+                <div className="text-base font-semibold text-zinc-900">
+                  {totalStops}
+                </div>
+              </div>
+              <div className="flex w-full max-w-[170px] flex-col items-center justify-center gap-1 rounded-2xl border border-black/50 px-2.5 py-2 text-center transition hover:-translate-y-0.5 hover:border-black/80 active:translate-y-0 active:border-black">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+                  {isArabic ? "المسافة" : "Distance"}
+                </div>
+                <div className="text-base font-semibold text-zinc-900">
+                  {result.totalKm.toFixed(1)} {isArabic ? "كم" : "km"}
+                </div>
+              </div>
+              <div className="flex w-full max-w-[170px] flex-col items-center justify-center gap-1 rounded-2xl border border-black/50 px-2.5 py-2 text-center transition hover:-translate-y-0.5 hover:border-black/80 active:translate-y-0 active:border-black">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+                  {isArabic ? "الميزانية" : "Budget"}
+                </div>
+                <div
+                  className={[
+                    "text-base font-semibold",
+                    result.overBudgetBy > 0
+                      ? "text-rose-600"
+                      : "text-emerald-600",
+                  ].join(" ")}
+                >
+                  {result.overBudgetBy > 0
+                    ? isArabic
+                      ? "تجاوز"
+                      : "Over"
+                    : isArabic
+                      ? "ضمن"
+                      : "Within"}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-500">
-          {emptyLabel}
+
+        <div className="space-y-6">
+          {result ? (
+            <div className="space-y-6">
+              <div className="grid gap-6 grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] items-stretch">
+                <div className="min-w-0">
+                  <ItineraryTimeline
+                    day={selectedDayPlan}
+                    destinationsById={destinationsById}
+                    allDestinations={destinations}
+                    locale={locale}
+                    activeStopIndex={activeStopIndex}
+                    onSelectStop={setActiveStopIndex}
+                    className="h-full"
+                    dayTabs={
+                      <DayTabs
+                        days={result.days.length}
+                        selectedDay={selectedDay}
+                        onSelect={(day) => {
+                          setSelectedDay(day);
+                          setActiveStopIndex(0);
+                        }}
+                        locale={locale}
+                      />
+                    }
+                  />
+                </div>
+                <div className="min-w-0 h-full">
+                  <TripMap
+                    locale={locale}
+                    stops={stopsForMap}
+                    allDestinations={destinations}
+                    activeStopIndex={activeStopIndex}
+                    onActiveStopChange={setActiveStopIndex}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
+                <CostBreakdownCard
+                  cost={result.cost}
+                  inputs={result.inputs}
+                  overBudgetBy={result.overBudgetBy}
+                  adjustments={result.adjustments}
+                  locale={locale}
+                  className="h-full"
+                />
+                <RegionAllocationSummary
+                  allocation={result.regionAllocation}
+                  locale={locale}
+                  className="h-full"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-white/40 bg-white/60 p-6 text-sm text-zinc-600 shadow-sm">
+              {emptyLabel}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
