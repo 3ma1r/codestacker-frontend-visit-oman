@@ -2,7 +2,7 @@ import path from "node:path";
 import fs from "node:fs";
 import type { Destination } from "../../types/destination";
 
-const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"];
 const FALLBACK_IMAGE = "/globe.svg";
 
 function imagePathForId(id: string) {

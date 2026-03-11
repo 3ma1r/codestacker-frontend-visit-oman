@@ -51,21 +51,30 @@ export default function TripForm({
 
   return (
     <form
-      className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4"
+      className="space-y-5 rounded-3xl border border-white/60 bg-white/70 p-5 shadow-sm backdrop-blur"
       onSubmit={(event) => {
         event.preventDefault();
         onSubmit(value);
       }}
     >
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <label className={`flex flex-col gap-1 text-xs font-medium text-zinc-600 ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.days}
+      <div className={`flex items-center justify-between ${isArabic ? "flex-row-reverse" : ""}`}>
+        <div className="text-sm font-semibold text-zinc-900">
+          {isArabic ? "تفاصيل الرحلة" : "Trip details"}
+        </div>
+        <div className="text-xs text-zinc-500">
+          {isArabic ? "حدد تفضيلاتك" : "Set your preferences"}
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className={`flex flex-col gap-2 rounded-2xl bg-white/80 p-3 shadow-sm ${isArabic ? "text-right" : "text-left"}`}>
+          <span className="text-xs font-medium text-zinc-500">{labels.days}</span>
           <select
             value={value.days}
             onChange={(event) =>
               update({ days: Number(event.target.value) as PlannerInputs["days"] })
             }
-            className={`rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900 ${
+            className={`rounded-xl border border-transparent bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 focus:border-zinc-300 focus:outline-none ${
               isArabic ? "text-right" : "text-left"
             }`}
           >
@@ -77,14 +86,14 @@ export default function TripForm({
           </select>
         </label>
 
-        <label className={`flex flex-col gap-1 text-xs font-medium text-zinc-600 ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.month}
+        <label className={`flex flex-col gap-2 rounded-2xl bg-white/80 p-3 shadow-sm ${isArabic ? "text-right" : "text-left"}`}>
+          <span className="text-xs font-medium text-zinc-500">{labels.month}</span>
           <select
             value={value.month}
             onChange={(event) =>
               update({ month: Number(event.target.value) as PlannerInputs["month"] })
             }
-            className={`rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900 ${
+            className={`rounded-xl border border-transparent bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 focus:border-zinc-300 focus:outline-none ${
               isArabic ? "text-right" : "text-left"
             }`}
           >
@@ -96,14 +105,14 @@ export default function TripForm({
           </select>
         </label>
 
-        <label className={`flex flex-col gap-1 text-xs font-medium text-zinc-600 ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.budget}
+        <label className={`flex flex-col gap-2 rounded-2xl bg-white/80 p-3 shadow-sm ${isArabic ? "text-right" : "text-left"}`}>
+          <span className="text-xs font-medium text-zinc-500">{labels.budget}</span>
           <select
             value={value.budget}
             onChange={(event) =>
               update({ budget: event.target.value as BudgetTier })
             }
-            className={`rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900 ${
+            className={`rounded-xl border border-transparent bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 focus:border-zinc-300 focus:outline-none ${
               isArabic ? "text-right" : "text-left"
             }`}
           >
@@ -113,14 +122,14 @@ export default function TripForm({
           </select>
         </label>
 
-        <label className={`flex flex-col gap-1 text-xs font-medium text-zinc-600 ${isArabic ? "text-right" : "text-left"}`}>
-          {labels.intensity}
+        <label className={`flex flex-col gap-2 rounded-2xl bg-white/80 p-3 shadow-sm ${isArabic ? "text-right" : "text-left"}`}>
+          <span className="text-xs font-medium text-zinc-500">{labels.intensity}</span>
           <select
             value={value.intensity}
             onChange={(event) =>
               update({ intensity: event.target.value as Intensity })
             }
-            className={`rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900 ${
+            className={`rounded-xl border border-transparent bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 focus:border-zinc-300 focus:outline-none ${
               isArabic ? "text-right" : "text-left"
             }`}
           >
@@ -131,7 +140,7 @@ export default function TripForm({
         </label>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <p className={`text-xs font-medium text-zinc-600 ${isArabic ? "text-right" : "text-left"}`}>
           {labels.categories}
         </p>
@@ -144,10 +153,10 @@ export default function TripForm({
                 type="button"
                 onClick={() => toggleCategory(category)}
                 className={[
-                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  "rounded-full border px-3 py-1 text-xs font-medium transition",
                   active
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                    : "border-zinc-200 text-zinc-600",
+                    ? "border-emerald-400 bg-emerald-50 text-emerald-700 shadow-sm"
+                    : "border-zinc-200 bg-white text-zinc-600",
                 ].join(" ")}
               >
                 {category}
@@ -159,7 +168,7 @@ export default function TripForm({
 
       <button
         type="submit"
-        className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white"
+        className="w-full rounded-2xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-zinc-800"
       >
         {labels.generate}
       </button>
