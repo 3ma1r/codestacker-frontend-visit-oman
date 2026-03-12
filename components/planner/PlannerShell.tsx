@@ -8,12 +8,11 @@ import { loadDestinations } from "../../lib/data/load";
 import { buildPlan } from "../../lib/planner/buildPlan";
 import { useAppStore } from "../../store/useAppStore";
 import TripForm from "./TripForm";
-import RegionAllocationSummary from "./RegionAllocationSummary";
 import DayTabs from "./DayTabs";
 import ItineraryTimeline from "./ItineraryTimeline";
-import CostBreakdownCard from "./CostBreakdownCard";
 import dynamic from "next/dynamic";
 import { tName } from "../../lib/i18n/strings";
+import PlannerCharts from "./PlannerCharts";
 
 const TripMap = dynamic(() => import("./TripMap"), { ssr: false });
 
@@ -222,21 +221,11 @@ export default function PlannerShell({ locale }: Props) {
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
-                <CostBreakdownCard
-                  cost={result.cost}
-                  inputs={result.inputs}
-                  overBudgetBy={result.overBudgetBy}
-                  adjustments={result.adjustments}
-                  locale={locale}
-                  className="h-full"
-                />
-                <RegionAllocationSummary
-                  allocation={result.regionAllocation}
-                  locale={locale}
-                  className="h-full"
-                />
-              </div>
+              <PlannerCharts
+                result={result}
+                destinationsById={destinationsById}
+                locale={locale}
+              />
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-white/40 bg-white/60 p-6 text-sm text-zinc-600 shadow-sm">
