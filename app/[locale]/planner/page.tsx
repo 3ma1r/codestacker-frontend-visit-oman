@@ -17,7 +17,7 @@ export default async function PlannerPage({ params }: Props) {
   return (
     <div className="space-y-8">
       <section
-        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen overflow-hidden"
+        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen"
         style={{
           backgroundImage: "url('/oman4.jpg')",
           backgroundSize: "cover",
