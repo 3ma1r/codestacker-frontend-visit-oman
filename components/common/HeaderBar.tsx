@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import SavedCounter from "./SavedCounter";
 
 type Props = {
@@ -32,7 +34,17 @@ export default function HeaderBar({
     : "transition hover:text-white/90 hover:underline";
   const counterTextClass = useDarkNav ? "text-zinc-900" : "text-white";
 
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const header = (
     <header
       className="fixed inset-x-0 top-0 z-50 w-full"
       style={{ position: "fixed", top: 0, left: 0, right: 0 }}
@@ -88,4 +100,6 @@ export default function HeaderBar({
       </div>
     </header>
   );
+
+  return createPortal(header, document.body);
 }

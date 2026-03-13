@@ -129,7 +129,7 @@ export default async function DiscoverPage({ params }: Props) {
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
         <div className="absolute inset-0 backdrop-blur-[2px]" />
-        <div className="relative px-8 pb-24 pt-32 md:pb-28 md:pt-36">
+        <div className="relative px-6 pb-24 pt-32 md:ps-12 md:pe-6 md:pb-28 md:pt-36">
           <div className={`mx-auto max-w-6xl space-y-5 ${isArabic ? "text-right" : "text-left"}`}>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">
               <span className="text-orange-400">●</span>
@@ -140,10 +140,10 @@ export default async function DiscoverPage({ params }: Props) {
             </h1>
             <p className="max-w-xl text-sm text-white/90 md:text-base">
               {isArabic
-                ? "استكشف الوجهات والمواسم بأسلوب مبني على البيانات."
-                : "A data-driven preview of destinations, seasons, and travel vibes."}
+                ? "اكتشف عُمان وخطط لرحلتك المثالية"
+                : "Discover Oman and plan your perfect journey"}
             </p>
-            <div className={`flex flex-wrap gap-3 ${isArabic ? "justify-end" : ""}`}>
+            <div className={`flex flex-wrap gap-3 ${isArabic ? "justify-start" : ""}`}>
               <Link
                 href={`/${locale}/planner`}
                 className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
@@ -187,7 +187,7 @@ export default async function DiscoverPage({ params }: Props) {
             <div className="mt-2 grid items-end gap-3 sm:grid-cols-3">
               <button
                 type="button"
-                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+                className="flex min-h-[92px] flex-col items-center justify-center rounded-2xl border border-black/20 px-2 py-2 text-center transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
               >
                 <div className="text-5xl font-semibold leading-none text-neutral-900">
                   {destinations.length}
@@ -198,7 +198,7 @@ export default async function DiscoverPage({ params }: Props) {
               </button>
               <button
                 type="button"
-                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+                className="flex min-h-[92px] flex-col items-center justify-center rounded-2xl border border-black/20 px-2 py-2 text-center transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
               >
                 <div className="text-4xl font-semibold leading-none text-neutral-900">
                   {regionsCount}
@@ -209,7 +209,7 @@ export default async function DiscoverPage({ params }: Props) {
               </button>
               <button
                 type="button"
-                className="min-h-[92px] rounded-2xl border border-black/20 px-2 py-2 text-left transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
+                className="flex min-h-[92px] flex-col items-center justify-center rounded-2xl border border-black/20 px-2 py-2 text-center transition hover:border-black/35 hover:shadow-sm active:scale-[0.99] active:border-black/40"
               >
                 <div className="text-4xl font-semibold leading-none text-neutral-900">
                   {categoriesCount}

@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
-import { notFound } from "next/navigation";
 import HeaderBar from "../../components/common/HeaderBar";
+import Footer from "../../components/common/Footer";
 import { getDir, isLocale, type Locale } from "../../lib/i18n/locale";
 
 function getSwitchPath(locale: Locale, pathname: string) {
@@ -42,17 +42,20 @@ export default async function LocaleLayout({
   };
 
   return (
-    <div
-      dir={dir}
-      className={`min-h-screen bg-[#F6F1E7] text-neutral-900 ${rtl ? "rtl" : "ltr"}`}
-    >
+    <>
       <HeaderBar
         locale={locale}
         rtl={rtl}
         switchPath={switchPath}
         labels={labels}
       />
-      <main className="mx-auto max-w-6xl px-6 pb-10 pt-24">{children}</main>
-    </div>
+      <div
+        dir={dir}
+        className={`flex min-h-screen flex-col bg-[#F6F1E7] text-neutral-900 ${rtl ? "rtl" : "ltr"}`}
+      >
+        <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-10 pt-24">{children}</main>
+        <Footer locale={locale} rtl={rtl} />
+      </div>
+    </>
   );
 }
