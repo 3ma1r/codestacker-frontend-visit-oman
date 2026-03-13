@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { useAppStore } from "../../store/useAppStore";
 
-export default function SavedCounter() {
+type Props = {
+  className?: string;
+};
+
+export default function SavedCounter({ className }: Props) {
   const [mounted, setMounted] = useState(false);
   const count = useAppStore((state) => state.savedInterests.length);
 
@@ -12,8 +16,12 @@ export default function SavedCounter() {
   }, []);
 
   if (!mounted) {
-    return <span className="text-sm text-zinc-500">—</span>;
+    return <span className={["text-sm", className].filter(Boolean).join(" ")}>—</span>;
   }
 
-  return <span className="text-sm text-zinc-500">{count}</span>;
+  return (
+    <span className={["text-sm", className].filter(Boolean).join(" ")}>
+      {count}
+    </span>
+  );
 }

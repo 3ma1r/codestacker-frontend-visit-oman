@@ -12,9 +12,9 @@ import DayTabs from "./DayTabs";
 import ItineraryTimeline from "./ItineraryTimeline";
 import dynamic from "next/dynamic";
 import { tName } from "../../lib/i18n/strings";
-import PlannerCharts from "./PlannerCharts";
 
 const TripMap = dynamic(() => import("./TripMap"), { ssr: false });
+const PlannerCharts = dynamic(() => import("./PlannerCharts"), { ssr: false });
 
 type Props = {
   locale: Locale;

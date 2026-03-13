@@ -196,7 +196,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
   return (
     <div className="space-y-6">
       <section
-        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen overflow-hidden"
+        className="relative left-1/2 right-1/2 -mx-[50vw] -mt-24 w-screen"
         style={{
           backgroundImage: "url('/oman2.jpg')",
           backgroundSize: "cover",
