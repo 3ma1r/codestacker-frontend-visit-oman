@@ -9,6 +9,13 @@ import { maxStops, validateDay, type DayContext } from "./validate";
 
 type Point = { lat: number; lng: number };
 
+function hasSameNameInDay(candidate: Destination, selected: Destination[]): boolean {
+  return selected.some(
+    (stop) =>
+      stop.name.en === candidate.name.en || stop.name.ar === candidate.name.ar,
+  );
+}
+
 function sharesPreferredCategory(
   destination: Destination,
   preferredCategories: Category[],
@@ -113,6 +120,9 @@ export function buildDayRoute(
 
     let accepted = false;
     for (const rankedCandidate of ranked) {
+      if (hasSameNameInDay(rankedCandidate.candidate, selected)) {
+        continue;
+      }
       const proposal = bestInsertion(selected, rankedCandidate.candidate);
       const validation = validateDay(proposal, ctx, totalKmDest);
       if (validation.ok) {
