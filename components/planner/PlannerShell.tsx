@@ -187,7 +187,7 @@ export default function PlannerShell({ locale }: Props) {
         <div className="space-y-6">
           {result ? (
             <div className="space-y-6">
-              <div className="grid gap-6 grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] items-stretch">
+              <div className="grid grid-cols-1 gap-6 overflow-x-hidden md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] md:overflow-visible items-stretch">
                 <div className="min-w-0 h-full">
                   <ItineraryTimeline
                     day={selectedDayPlan}
@@ -209,7 +209,7 @@ export default function PlannerShell({ locale }: Props) {
                     }
                   />
                 </div>
-                <div className="min-w-0 h-full">
+                <div className="min-w-0 h-full min-h-[280px] md:min-h-0">
                   <TripMap
                     locale={locale}
                     stops={stopsForMap}

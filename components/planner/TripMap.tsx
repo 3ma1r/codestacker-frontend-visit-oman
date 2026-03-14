@@ -91,7 +91,8 @@ export default function TripMap({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
   }, []);
   if (stops.length === 0) {
     return (
@@ -172,7 +173,7 @@ export default function TripMap({
           center={[center.lat, center.lng]}
           zoom={8}
           scrollWheelZoom={false}
-          style={{ height: "100%" }}
+          style={{ height: "100%", minHeight: 280 }}
           className="h-full rounded-3xl"
         >
           <MapAutoFit positions={positions} />

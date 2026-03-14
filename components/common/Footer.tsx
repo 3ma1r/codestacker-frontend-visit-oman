@@ -99,23 +99,23 @@ export default function Footer({ locale, rtl }: Props) {
         </div>
 
         <div className="relative z-10 mx-auto max-w-6xl">
-          <div className="grid gap-6 md:grid-cols-3 md:gap-6">
-            {/* Left column */}
-            <div className={`space-y-2 ${rtl ? "text-right md:text-right" : "text-left"}`}>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
+            {/* Left column - Explore Oman */}
+            <div className={`space-y-2 text-center md:text-left ${rtl ? "md:text-right" : ""}`}>
               <h3 className="text-xl font-semibold tracking-tight text-[#f5f0e6]">
                 Explore Oman
               </h3>
-              <p className="max-w-xs text-sm leading-relaxed text-[#e8e2d6]">
+              <p className={`mx-auto max-w-xs text-sm leading-relaxed text-[#e8e2d6] md:mx-0 ${rtl ? "md:ml-auto md:mr-0" : ""}`}>
                 {t.tagline}
               </p>
             </div>
 
             {/* Center column - Quick links */}
-            <div className={`space-y-2 ${rtl ? "text-right md:text-center" : "text-left md:text-center"}`}>
+            <div className={`space-y-2 text-center ${rtl ? "md:text-center" : ""}`}>
               <div className="text-xs font-medium uppercase tracking-wider text-[#c9c4b8]">
                 Quick Links
               </div>
-              <nav className="flex flex-wrap gap-x-4 gap-y-2 md:flex-col md:items-center md:gap-2">
+              <nav className="flex flex-col items-center gap-2">
                 <Link
                   href={`/${locale}`}
                   className="text-sm text-[#f5f0e6] transition hover:text-[#fff] hover:underline"
@@ -143,8 +143,8 @@ export default function Footer({ locale, rtl }: Props) {
               </nav>
             </div>
 
-            {/* Right column - Contact */}
-            <div className={`space-y-1.5 ${rtl ? "text-left md:text-right" : "text-right"}`}>
+            {/* Right column - About */}
+            <div className={`space-y-1.5 text-center ${rtl ? "md:text-left" : "md:text-right"}`}>
               <div className="text-xs font-medium uppercase tracking-wider text-[#c9c4b8]">
                 About
               </div>
@@ -154,7 +154,7 @@ export default function Footer({ locale, rtl }: Props) {
           </div>
 
           {/* Bottom copyright */}
-          <div className="mt-6 border-t border-[#2d4a3e]/60 pt-4 text-center">
+          <div className="mt-5 border-t border-[#2d4a3e]/60 pt-4 text-center md:mt-6">
             <p className="text-xs text-[#c9c4b8]">
               {t.copyright}
             </p>
