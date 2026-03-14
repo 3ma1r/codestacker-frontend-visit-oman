@@ -70,17 +70,19 @@ export default function PlannerShell({ locale }: Props) {
   const [activeStopIndex, setActiveStopIndex] = useState(0);
 
   useEffect(() => {
-    if (storedInputs) {
-      setFormValue(storedInputs);
-    }
+    if (!storedInputs) return;
+    const id = setTimeout(() => setFormValue(storedInputs), 0);
+    return () => clearTimeout(id);
   }, [storedInputs]);
 
   useEffect(() => {
-    if (storedResult) {
+    if (!storedResult) return;
+    const id = setTimeout(() => {
       setResult(storedResult);
       setSelectedDay(1);
       setActiveStopIndex(0);
-    }
+    }, 0);
+    return () => clearTimeout(id);
   }, [storedResult]);
 
   const availableCategories = useMemo(() => {

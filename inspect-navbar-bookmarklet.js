@@ -134,7 +134,7 @@
         });
         
         console.log('%c\n💡 SUGGESTED FIXES:', 'color: #4ec9b0; font-size: 16px; font-weight: bold;');
-        culprits.forEach((culprit, index) => {
+        culprits.forEach((culprit) => {
             const selector = culprit.id 
                 ? `#${culprit.id}` 
                 : culprit.classes 

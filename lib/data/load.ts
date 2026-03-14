@@ -48,8 +48,7 @@ function assertMonth(value: number, id: string): Month {
   throw new Error(`Invalid month "${value}" for destination ${id}`);
 }
 
-const CROWD_LEVELS = [1, 2, 3, 4, 5] as const;
-type CrowdLevel = (typeof CROWD_LEVELS)[number];
+type CrowdLevel = 1 | 2 | 3 | 4 | 5;
 
 function assertCrowdLevel(value: unknown, id: string): CrowdLevel {
   const n = Number(value);

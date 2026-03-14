@@ -135,7 +135,6 @@ export function buildPlan(
     }
   }
 
-  const initialCost = computeCost(dayPlans, routesByDay, inputsWithPrefs);
   const { adjustedRoutes, adjustments } = applyBudgetAdjustments(
     routesByDay,
     inputsWithPrefs,

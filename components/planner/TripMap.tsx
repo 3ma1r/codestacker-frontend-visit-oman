@@ -89,29 +89,15 @@ export default function TripMap({
   onActiveStopChange,
 }: Props) {
   const [mounted, setMounted] = useState(false);
+  const [imageMap, setImageMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(id);
   }, []);
-  if (stops.length === 0) {
-    return (
-      <div className="rounded-3xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur">
-        <div className="mb-3 text-sm font-semibold text-zinc-900">
-          {locale === "ar" ? "خريطة الرحلة" : "Trip map"}
-        </div>
-        <div className="flex h-[360px] items-center justify-center rounded-2xl border border-dashed border-white/60 bg-white/60 text-sm text-zinc-500">
-          {locale === "ar" ? "لا توجد محطات للعرض." : "No stops to show."}
-        </div>
-      </div>
-    );
-  }
-
-  const center = averageCenter(stops);
-  const positions = stops.map((stop) => [stop.lat, stop.lng] as [number, number]);
-  const [imageMap, setImageMap] = useState<Record<string, string>>({});
 
   const imageCandidates = useMemo(() => {
+    if (stops.length === 0) return [];
     return stops.map((stop) => {
       const destination = allDestinations.find((item) => item.id === stop.id);
       const nameEn = destination?.name.en;
@@ -165,6 +151,22 @@ export default function TripMap({
       cancelled = true;
     };
   }, [imageCandidates]);
+
+  if (stops.length === 0) {
+    return (
+      <div className="rounded-3xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur">
+        <div className="mb-3 text-sm font-semibold text-zinc-900">
+          {locale === "ar" ? "خريطة الرحلة" : "Trip map"}
+        </div>
+        <div className="flex h-[360px] items-center justify-center rounded-2xl border border-dashed border-white/60 bg-white/60 text-sm text-zinc-500">
+          {locale === "ar" ? "لا توجد محطات للعرض." : "No stops to show."}
+        </div>
+      </div>
+    );
+  }
+
+  const center = averageCenter(stops);
+  const positions = stops.map((stop) => [stop.lat, stop.lng] as [number, number]);
 
   return (
     <div className="h-full">

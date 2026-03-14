@@ -12,7 +12,8 @@ export default function SavedCounter({ className }: Props) {
   const count = useAppStore((state) => state.savedInterests.length);
 
   useEffect(() => {
-    setMounted(true);
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
   }, []);
 
   if (!mounted) {

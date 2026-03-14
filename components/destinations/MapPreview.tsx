@@ -4,7 +4,6 @@ type Props = {
 };
 
 export default function MapPreview({ lat, lng }: Props) {
-  const center = `${lat},${lng}`;
   const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
   const embedSrc = `https://www.google.com/maps?q=${lat},${lng}&z=12&output=embed`;
 

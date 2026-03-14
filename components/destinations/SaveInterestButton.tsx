@@ -13,7 +13,8 @@ export default function SaveInterestButton({ destinationId }: Props) {
   const toggleSave = useAppStore((state) => state.toggleSave);
 
   useEffect(() => {
-    setMounted(true);
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
   }, []);
 
   const label = mounted && isSaved ? "Saved" : "Save";
