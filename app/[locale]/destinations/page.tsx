@@ -75,9 +75,8 @@ function parseSeason(
   if (!value || Array.isArray(value)) {
     return undefined;
   }
-  return SEASON_VALUES.includes(value as BrowseQuery["season"])
-    ? (value as BrowseQuery["season"])
-    : undefined;
+  const allowed: readonly string[] = SEASON_VALUES;
+  return allowed.includes(value) ? (value as BrowseQuery["season"]) : undefined;
 }
 
 function parseSort(value?: string | string[]): BrowseQuery["sort"] | undefined {

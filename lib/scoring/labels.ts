@@ -25,6 +25,6 @@ export function componentLabel(
   c: ScoreComponent,
   locale?: Locale | string,
 ): string {
-  const safeLocale = isLocale(locale ?? "") ? locale : "en";
+  const safeLocale = (isLocale(locale ?? "") ? (locale ?? "en") : "en") as Locale;
   return LABELS[safeLocale][c] ?? c;
 }

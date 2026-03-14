@@ -188,7 +188,7 @@ export default function PlannerShell({ locale }: Props) {
           {result ? (
             <div className="space-y-6">
               <div className="grid gap-6 grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] items-stretch">
-                <div className="min-w-0">
+                <div className="min-w-0 h-full">
                   <ItineraryTimeline
                     day={selectedDayPlan}
                     destinationsById={destinationsById}
@@ -196,7 +196,6 @@ export default function PlannerShell({ locale }: Props) {
                     locale={locale}
                     activeStopIndex={activeStopIndex}
                     onSelectStop={setActiveStopIndex}
-                    className="h-full"
                     dayTabs={
                       <DayTabs
                         days={result.days.length}

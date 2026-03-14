@@ -54,26 +54,28 @@ function MapAutoFit({ positions }: { positions: Array<[number, number]> }) {
     if (positions.length === 0) {
       return;
     }
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     const fit = () => {
-      // Guard against map not fully initialized yet.
-      if (!(map as L.Map)._mapPane) {
-        return;
+      try {
+        if (positions.length === 1) {
+          map.setView(positions[0], 9, { animate: true });
+          return;
+        }
+        const bounds = L.latLngBounds(positions);
+        map.fitBounds(bounds, { padding: [40, 40], animate: true });
+      } catch {
+        // Map may not be fully ready; ignore to avoid _leaflet_pos crash
       }
-      if (positions.length === 1) {
-        map.setView(positions[0], 9, { animate: true });
-        return;
-      }
-      const bounds = L.latLngBounds(positions);
-      map.fitBounds(bounds, { padding: [40, 40], animate: true });
     };
 
     map.whenReady(() => {
-      // Ensure map container has been laid out before fitting.
       map.invalidateSize();
-      requestAnimationFrame(() => {
-        fit();
-      });
+      timeoutId = setTimeout(fit, 50);
     });
+
+    return () => {
+      if (timeoutId != null) clearTimeout(timeoutId);
+    };
   }, [map, positions]);
 
   return null;

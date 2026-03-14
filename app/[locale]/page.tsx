@@ -2,7 +2,7 @@ import Link from "next/link";
 import FeaturedImageCard from "../../components/home/FeaturedImageCard";
 import { getFeaturedDestinations } from "../../lib/data/featured";
 import { loadDestinations } from "../../lib/data/load";
-import type { Locale } from "../../types/destination";
+import type { Locale, Month } from "../../types/destination";
 import path from "node:path";
 import fs from "node:fs";
 
@@ -20,7 +20,7 @@ const CATEGORY_CARDS = [
 export default async function DiscoverPage({ params }: Props) {
   const destinations = loadDestinations();
   const { locale } = await params;
-  const currentMonth = new Date().getMonth() + 1;
+  const currentMonth = (new Date().getMonth() + 1) as Month;
   const featured = getFeaturedDestinations(destinations, currentMonth, 12);
   const isArabic = locale === "ar";
   const regionsCount = new Set(destinations.map((dest) => dest.regionKey)).size;

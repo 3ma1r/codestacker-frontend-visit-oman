@@ -48,6 +48,17 @@ function assertMonth(value: number, id: string): Month {
   throw new Error(`Invalid month "${value}" for destination ${id}`);
 }
 
+const CROWD_LEVELS = [1, 2, 3, 4, 5] as const;
+type CrowdLevel = (typeof CROWD_LEVELS)[number];
+
+function assertCrowdLevel(value: unknown, id: string): CrowdLevel {
+  const n = Number(value);
+  if (Number.isInteger(n) && n >= 1 && n <= 5) {
+    return n as CrowdLevel;
+  }
+  throw new Error(`Invalid crowd_level "${value}" for destination ${id}`);
+}
+
 export function loadDestinations(): Destination[] {
   if (!Array.isArray(raw)) {
     throw new Error("Dataset root must be an array.");
@@ -75,7 +86,7 @@ export function loadDestinations(): Destination[] {
       avg_visit_duration_minutes: item.avg_visit_duration_minutes,
       ticket_cost_omr: item.ticket_cost_omr,
       recommended_months,
-      crowd_level: item.crowd_level,
+      crowd_level: assertCrowdLevel(item.crowd_level, id),
     };
   });
 }
