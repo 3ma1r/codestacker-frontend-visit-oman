@@ -60,8 +60,23 @@ The app uses a **hybrid rendering architecture (SSR + CSR)**. All content is der
 - Deterministic planner (no randomness)
 
 ---
+## 3. Architecture Overview
 
-## 3. How to Run
+The project is organized into a small number of clearly separated layers:
+
+- `app/` — Next.js App Router pages, route-level layouts, and rendering boundaries
+- `components/` — reusable UI components grouped by feature (home, destinations, planner, saved, common)
+- `lib/` — core logic and utilities, including dataset loading, scoring, geo helpers, planner engine, and cost estimation
+- `store/` — Zustand client-side state and persistence layer
+- `types/` — shared TypeScript domain models
+- `data/` — static dataset source (`data/data.json`)
+- `public/` — local images and static assets
+
+This separation keeps UI, state, algorithmic logic, and data access concerns independent and easier to maintain.
+
+---
+
+## 4. How to Run
 
 **Recommended:** Node.js 18+
 
@@ -82,7 +97,7 @@ Production build verified successfully with `npm run build`.
 
 ---
 
-## 4. App Routes
+## 5. App Routes
 
 | Route | Rendering | Description |
 |-------|-----------|-------------|
@@ -96,7 +111,7 @@ Supported locales: `en`, `ar`.
 
 ---
 
-## 5. Data Source
+## 6. Data Source
 
 - **Single source:** `data/data.json` — 300 destinations
 - **IDs:** Unique per destination
@@ -106,7 +121,7 @@ Supported locales: `en`, `ar`.
 
 ---
 
-## 6. State & Persistence
+## 7. State & Persistence
 
 **Storage key:** `visitoman:v1` (localStorage)
 
@@ -119,7 +134,7 @@ State persists across refresh and navigation. The planner reads saved interests 
 
 ---
 
-## 7. SSR vs CSR Boundaries
+## 8. SSR vs CSR Boundaries
 
 | Area | Strategy |
 |------|----------|
@@ -132,7 +147,7 @@ State persists across refresh and navigation. The planner reads saved interests 
 
 ---
 
-## 8. Planner Algorithm
+## 9. Planner Algorithm
 
 The planner uses a **deterministic pipeline** with five phases:
 
@@ -167,7 +182,7 @@ The planner uses a **deterministic pipeline** with five phases:
 
 ---
 
-## 9. Scoring Model
+## 10. Scoring Model
 
 **Formula:**
 ```
@@ -199,7 +214,7 @@ score(i) =
 
 ---
 
-## 10. Constraints Enforced
+## 11. Constraints Enforced
 
 | Constraint | Value |
 |------------|-------|
@@ -213,7 +228,7 @@ score(i) =
 
 ---
 
-## 11. Budget & Cost Logic
+## 12. Budget & Cost Logic
 
 **Cost breakdown:**
 - **Fuel:** `total_km × 0.03` OMR (fixed cost per km)
@@ -233,7 +248,7 @@ score(i) =
 
 ---
 
-## 12. Map
+## 13. Map
 
 **Leaflet** is used only in the planner for route visualization.
 
@@ -249,7 +264,7 @@ No external routing or distance APIs are used. All distance calculations are com
 
 ---
 
-## 13. Performance Considerations
+## 14. Performance Considerations
 
 - **Small local dataset** — 300 destinations; filtering, search, and pagination remain fast in-browser.
 - **Pure local computation** — no backend round trips
@@ -260,7 +275,7 @@ No external routing or distance APIs are used. All distance calculations are com
 
 ---
 
-## 14. Why 2-opt Was Chosen
+## 15. Why 2-opt Was Chosen
 
 - **Deterministic** — same input always yields same output; no randomness
 - **Simple and reliable** — easy to implement and reason about
@@ -270,7 +285,7 @@ No external routing or distance APIs are used. All distance calculations are com
 
 ---
 
-## 15. Limitations & Tradeoffs
+## 16. Limitations & Tradeoffs
 
 - **Fixed travel speed** — assumes constant average speed; no live traffic
 - **No road network routing** — straight-line Haversine distance only
@@ -280,7 +295,7 @@ No external routing or distance APIs are used. All distance calculations are com
 
 ---
 
-## 16. Compliance Checklist
+## 17. Compliance Checklist
 
 - [x] Dataset-driven SSR pages (no hardcoded destinations)
 - [x] CSR planner with deterministic in-browser computation
@@ -294,7 +309,7 @@ No external routing or distance APIs are used. All distance calculations are com
 - [x] Map with markers, polyline, active stop, day switching
 - [x] Bilingual support (en, ar)
 
-## 17. Optional Supporting Materials
+## 18. Optional Supporting Materials
 
 ### Design Files
 - **Pre-development UI planning prototype:** [View design files](https://fixing-snout-41228775.figma.site/)
