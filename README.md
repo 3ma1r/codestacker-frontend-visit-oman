@@ -14,6 +14,35 @@ A two-phase frontend platform for discovering Oman destinations and generating c
 The app uses a **hybrid rendering architecture (SSR + CSR)**. All content is derived from the provided dataset; no hardcoded itineraries or external routing APIs are used.
 
 ---
+## App Preview & Live Demo
+
+### Homepage
+<p align="center">
+  <img src="public/pages-screenshots/homepage.png" alt="Visit Oman Homepage" width="850">
+</p>
+
+### Destinations Browse
+<p align="center">
+  <img src="public/pages-screenshots/destinations.png" alt="Visit Oman Destinations Page" width="850">
+</p>
+
+### Live Demo
+- **Deployed App:** [Open Visit Oman](https://visit-oman-codestacker.netlify.app/)
+
+---
+
+## Key Features
+
+- **Hybrid SSR + CSR architecture** — server-rendered discovery pages with a client-side interactive planner
+- **Dataset-driven experience** — all destinations and planner inputs are derived from `data/data.json`
+- **Deterministic itinerary generation** — same input always produces the same itinerary
+- **Constraint-aware planning** — daily routes respect distance, time, category variety, and rest-gap rules
+- **Saved destinations persistence** — user interests persist through Zustand + `localStorage`
+- **Budget-aware trip estimation** — fuel, tickets, food, and hotel costs are calculated locally
+- **Interactive planner map** — Leaflet-based client-only route visualization with markers and day switching
+- **Bilingual support** — English and Arabic locale support
+
+---
 
 ## 2. Tech Stack
 
@@ -265,4 +294,19 @@ No external routing or distance APIs are used. All distance calculations are com
 - [x] Map with markers, polyline, active stop, day switching
 - [x] Bilingual support (en, ar)
 
-This project was built to satisfy the CodeStacker Frontend Challenge requirements while keeping the itinerary generation fully deterministic, local, and explainable.
+## 17. Optional Supporting Materials
+
+### Design Files
+- **Pre-development UI planning prototype:** [View design files](https://fixing-snout-41228775.figma.site/)
+
+### Architectural Diagram
+<p align="center">
+  <img src="public/pages-screenshots/architecture-diagram.png" alt="Visit Oman Architecture Diagram" width="900">
+</p>
+
+### Performance Measurement Notes
+- Discovery pages use SSR for faster initial render and predictable dataset-driven content delivery.
+- The planner runs entirely on the client because it depends on persisted user state and interactive itinerary generation.
+- Leaflet is loaded only where needed through client-only dynamic import, keeping non-planner pages lighter.
+- Filtering, pagination, and planner computation remain responsive with the local dataset size of 300 destinations.
+- The deterministic planner pipeline avoids randomness and unbounded search, keeping execution stable and explainable.
