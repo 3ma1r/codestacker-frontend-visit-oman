@@ -325,21 +325,21 @@ No external routing or distance APIs are used. All distance calculations are com
 The application was tested in production mode using `npm run build`. The build completed successfully, confirming that the project compiles correctly for production and that the application routes are generated without build-time errors.
 
 <p align="center">
-  <img src="/Performance/1.png" alt="Production build verification" width="850">
+  <img src="public/Performance/1.png" alt="Production build verification" width="850">
 </p>
 
 #### 2. Local Itinerary Generation Verification
 The planner was checked using the browser Network tab with the **Fetch/XHR** filter enabled during itinerary generation. No external API requests were made, confirming that route generation, scoring, and cost estimation are performed locally in the frontend without backend or routing-service dependencies.
 
 <p align="center">
-  <img src="/Performance/2.png" alt="No external fetch or XHR requests during itinerary generation" width="850">
+  <img src="public/Performance/2.png" alt="No external fetch or XHR requests during itinerary generation" width="850">
 </p>
 
 #### 3. Lighthouse Audit
 A Lighthouse audit was run on the deployed homepage to validate overall frontend quality. The deployed application achieved strong scores across performance, accessibility, best practices, and SEO.
 
 <p align="center">
-  <img src="/Performance/3.png" alt="Lighthouse audit results" width="850">
+  <img src="public/Performance/3.png" alt="Lighthouse audit results" width="850">
 </p>
 
 #### Summary
