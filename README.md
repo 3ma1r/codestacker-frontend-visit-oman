@@ -319,9 +319,28 @@ No external routing or distance APIs are used. All distance calculations are com
   <img src="public/pages-screenshots/architecture-diagram.png" alt="Visit Oman Architecture Diagram" width="900">
 </p>
 
-### Performance Measurement Notes
-- Discovery pages use SSR for faster initial render and predictable dataset-driven content delivery.
-- The planner runs entirely on the client because it depends on persisted user state and interactive itinerary generation.
-- Leaflet is loaded only where needed through client-only dynamic import, keeping non-planner pages lighter.
-- Filtering, pagination, and planner computation remain responsive with the local dataset size of 300 destinations.
-- The deterministic planner pipeline avoids randomness and unbounded search, keeping execution stable and explainable.
+### Performance Measurements
+
+#### 1. Production Build Verification
+The application was tested in production mode using `npm run build`. The build completed successfully, confirming that the project compiles correctly for production and that the application routes are generated without build-time errors.
+
+<p align="center">
+  <img src="/Performance/1.png" alt="Production build verification" width="850">
+</p>
+
+#### 2. Local Itinerary Generation Verification
+The planner was checked using the browser Network tab with the **Fetch/XHR** filter enabled during itinerary generation. No external API requests were made, confirming that route generation, scoring, and cost estimation are performed locally in the frontend without backend or routing-service dependencies.
+
+<p align="center">
+  <img src="/Performance/2.png" alt="No external fetch or XHR requests during itinerary generation" width="850">
+</p>
+
+#### 3. Lighthouse Audit
+A Lighthouse audit was run on the deployed homepage to validate overall frontend quality. The deployed application achieved strong scores across performance, accessibility, best practices, and SEO.
+
+<p align="center">
+  <img src="/Performance/3.png" alt="Lighthouse audit results" width="850">
+</p>
+
+#### Summary
+These checks support that the application is production-ready, performs efficiently for the challenge scope, and keeps the itinerary generation fully local and deterministic.
